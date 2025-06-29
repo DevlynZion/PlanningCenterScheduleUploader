@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlanningCenterAPI
+namespace PlanningCenterAPI.Type
 {
-	internal class Request
+	public class Data
 	{
-		
+		public string Type { get; set; }
+		public string Id { get; set; }
 	}
 }
