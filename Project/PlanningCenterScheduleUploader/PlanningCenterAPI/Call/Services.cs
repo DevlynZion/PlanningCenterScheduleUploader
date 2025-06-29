@@ -1,4 +1,6 @@
-﻿using PlanningCenterAPI.Type;
+﻿using PlanningCenterAPI.Core.Base;
+using PlanningCenterAPI.Core.Interface;
+using PlanningCenterAPI.Type;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +11,18 @@ using System.Threading.Tasks;
 
 namespace PlanningCenterAPI.Call
 {
-	public class Services
+	public class Services : ProductBase
 	{
 		private const string Product = "/services/v2";
 
-		private readonly HttpClient httpClient;
-
-		public Services(HttpClient httpClient)
+		public Services(HttpClient httpClient) : base(httpClient) 
 		{
-			this.httpClient = httpClient;
+			ProductURL = Product;
 		}
 
 		public async Task<Root> GetPeople()
 		{
-			var response = await httpClient.GetAsync($"{Product}/people");
-			response.EnsureSuccessStatusCode();
-			return await response.Content.ReadFromJsonAsync<Root>();
+			return await GetAsync($"/people");
 		}
 	}
 }
