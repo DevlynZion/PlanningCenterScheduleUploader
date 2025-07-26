@@ -1,9 +1,10 @@
-﻿using PlanningCenterAPI.Type;
+﻿using PlanningCenterAPI.Type.Implementation;
+using PlanningCenterAPI.Type.Old;
 
 namespace PlanningCenterAPI.Call.Core.Interface
 {
-	public interface IServices
+    public interface IServices
 	{
-		public Task<Root> GetService_types();
+		public Task<ServicesResponse> GetService_types();
 	}
 }

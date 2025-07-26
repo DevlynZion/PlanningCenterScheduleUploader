@@ -2,11 +2,11 @@
 using System.Text;
 using PlanningCenterAPI;
 using PlanningCenterAPI.Helper;
-using PlanningCenterAPI.Type;
+using PlanningCenterAPI.Type.Old;
 
 namespace PlanningCenterScheduleUploader
 {
-	internal class Program
+    internal class Program
 	{
 		const int StressIterations = 150;
 		const int ProgramWait = 100000;

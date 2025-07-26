@@ -1,4 +1,4 @@
-﻿namespace PlanningCenterAPI.Type
+﻿namespace PlanningCenterAPI.Type.Old
 {
 	public class Links
 	{

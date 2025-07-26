@@ -1,6 +1,8 @@
-﻿namespace PlanningCenterAPI.Type
+﻿using PlanningCenterAPI.Type.Part;
+
+namespace PlanningCenterAPI.Type.Implementation.Attribute
 {
-	public class Attributes
+	public class ServicesAttribute
 	{
 		public string archived_at { get; set; }
 		public bool attachment_types_enabled { get; set; }

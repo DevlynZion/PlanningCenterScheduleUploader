@@ -33,7 +33,12 @@ namespace PlanningCenterAPI.Core
 		{
 			var response = await httpClient.GetAsync(endpoint);
 			response.EnsureSuccessStatusCode();
-			return await response.Content.ReadFromJsonAsync<T>();
+
+			var a = await response.Content.ReadAsStringAsync();
+			File.WriteAllText("Respone.txt", a.ToString());
+
+			var data = await response.Content.ReadFromJsonAsync<T>();
+			return data;
 		}
 
 		public async Task Post<T>(string endpoint, T data)

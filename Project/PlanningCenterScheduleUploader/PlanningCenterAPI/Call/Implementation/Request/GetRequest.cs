@@ -1,18 +1,17 @@
 ﻿using PlanningCenterAPI.Core;
 using PlanningCenterAPI.Core.Interface;
-using PlanningCenterAPI.Type;
 
 namespace PlanningCenterAPI.Call.Implementation.Request
 {
-	internal class GetRequest : IRequestWaitable<Root>
+	internal class GetRequest<T> : IRequestWaitable<T>
 	{
-		public TaskCompletionSource<Root> TaskProgress { get; private set; }
+		public TaskCompletionSource<T> TaskProgress { get; private set; }
 
 		private string endpoint;
 
 		internal GetRequest(string endpoint)
 		{
-			TaskProgress = new TaskCompletionSource<Root>();
+			TaskProgress = new TaskCompletionSource<T>();
 			this.endpoint = endpoint;
 		}
 
@@ -20,7 +19,7 @@ namespace PlanningCenterAPI.Call.Implementation.Request
 		{
 			try
 			{
-				var data = await client.Get<Root>(endpoint);
+				var data = await client.Get<T>(endpoint);
 				TaskProgress.SetResult(data);
 			}
 			catch (Exception ex)

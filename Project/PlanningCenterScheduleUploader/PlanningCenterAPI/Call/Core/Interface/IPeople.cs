@@ -1,9 +1,10 @@
-﻿using PlanningCenterAPI.Type;
+﻿using PlanningCenterAPI.Type.Implementation;
+using PlanningCenterAPI.Type.Old;
 
 namespace PlanningCenterAPI.Call.Core.Interface
 {
-	public interface IPeople
+    public interface IPeople
 	{
-		public Task<Root> GetPeople();
+		public Task<PeopleResponse> GetPeople();
 	}
 }

@@ -1,11 +1,12 @@
 ﻿using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Call.Implementation.Request;
 using PlanningCenterAPI.Core;
-using PlanningCenterAPI.Type;
+using PlanningCenterAPI.Type.Implementation;
+using PlanningCenterAPI.Type.Old;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
-	public class People : IPeople
+    public class People : IPeople
 	{
 		private RateLimiter rateLimiter;
 
@@ -14,11 +15,11 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 			this.rateLimiter = rateLimiter;
 		}
 
-		public async Task<Root> GetPeople()
+		public async Task<PeopleResponse> GetPeople()
 		{
-			var request = new GetRequest("/services/v2/people");
+			var request = new GetRequest<PeopleResponse>("/services/v2/people");
 
-			return await rateLimiter.EnqueueAsync<Root>(request);
+			return await rateLimiter.EnqueueAsync(request);
 		}
 	}
 }
