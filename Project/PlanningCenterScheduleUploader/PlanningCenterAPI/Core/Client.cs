@@ -1,17 +1,18 @@
 ﻿using PlanningCenterAPI.Helper;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 
 namespace PlanningCenterAPI.Core
 {
-	internal class Client : IDisposable
+	public class Client : IDisposable
 	{
 		private const string BaseAddress = "https://api.planningcenteronline.com";
 
 		private HttpClient httpClient;
 		private bool disposedValue;
 
-		public Client()
+		internal Client()
 		{
 			var authenticationstring = Convert.ToBase64String(Encoding.ASCII.GetBytes(AuthenticationHelper.GetCredentials()));
 
@@ -26,9 +27,20 @@ namespace PlanningCenterAPI.Core
 			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationstring);
 		}
 
-		public void CreateRequest<T>()
+		public async Task<T> Get<T>(string endpoint)
 		{
+			var response = await httpClient.GetAsync(endpoint);
 
+			response.EnsureSuccessStatusCode();
+
+			return await response.Content.ReadFromJsonAsync<T>();
+		}
+
+		public async Task Post<T>(string endpoint, T data)
+		{
+			var response = await httpClient.PostAsJsonAsync<T>(endpoint, data);
+
+			response.EnsureSuccessStatusCode();
 		}
 
 		protected virtual void Dispose(bool disposing)

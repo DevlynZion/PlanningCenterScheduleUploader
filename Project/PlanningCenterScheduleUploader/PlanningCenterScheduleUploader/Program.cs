@@ -1,10 +1,6 @@
 ﻿using System.Net.Http.Json;
-using System.Net.Http;
-using System;
 using System.Text;
-using System.Net.Security;
 using PlanningCenterAPI.Helper;
-using PlanningCenterAPI.Call;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -12,11 +8,11 @@ namespace PlanningCenterScheduleUploader
 	{
 		static void Main(string[] args)
 		{
-			Test3();
+			//Test3();
 			Console.ReadKey();
 		}
 
-		static async void Test3()
+		/*static async void Test3()
 		{
 			var handler = new SocketsHttpHandler()
 			{
@@ -33,7 +29,7 @@ namespace PlanningCenterScheduleUploader
 
 				Console.WriteLine($"Data returned = {data.Data.Count}");
 			}
-		}
+		}*/
 
 		static async void Test2()
 		{
