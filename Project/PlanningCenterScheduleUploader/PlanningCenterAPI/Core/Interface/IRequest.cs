@@ -2,7 +2,7 @@
 
 namespace PlanningCenterAPI.Core.Interface
 {
-	public interface IRequest
+	internal interface IRequest
 	{
 		public Task PerformRequest(Client client);
 	}

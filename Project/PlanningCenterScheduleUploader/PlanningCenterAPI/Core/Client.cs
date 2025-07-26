@@ -5,7 +5,10 @@ using System.Text;
 
 namespace PlanningCenterAPI.Core
 {
-	public class Client : IDisposable
+	/// <summary>
+	/// Manages the Https calls
+	/// </summary>
+	internal class Client : IDisposable
 	{
 		private const string BaseAddress = "https://api.planningcenteronline.com";
 
@@ -21,10 +24,9 @@ namespace PlanningCenterAPI.Core
 				PooledConnectionLifetime = TimeSpan.FromMinutes(2),
 			};
 
-			HttpClient client = new HttpClient(handler);
-
-			client.BaseAddress = new Uri(BaseAddress);
-			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationstring);
+			httpClient = new HttpClient(handler);
+			httpClient.BaseAddress = new Uri(BaseAddress);
+			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationstring);
 		}
 
 		public async Task<T> Get<T>(string endpoint)

@@ -1,5 +1,4 @@
 ﻿using PlanningCenterAPI.Core.Interface;
-using PlanningCenterAPI.Type;
 
 namespace PlanningCenterAPI.Core
 {
@@ -19,8 +18,9 @@ namespace PlanningCenterAPI.Core
 		private bool isRunning;
 		private bool disposedValue;
 
-		public RateLimiter(Client client)
+		internal RateLimiter(Client client)
 		{
+			isRunning = true;
 			delay = TimeSpan.FromSeconds(RequestRatePeriod / RequestRateLimit);
 			this.client = client;
 			requests = new Queue<IRequest>();

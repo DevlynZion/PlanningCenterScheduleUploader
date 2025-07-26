@@ -1,9 +1,16 @@
-﻿using PlanningCenterAPI.Core;
+﻿using PlanningCenterAPI.Call.Core.Interface;
+using PlanningCenterAPI.Call.Implementation.Service;
+using PlanningCenterAPI.Core;
 
 namespace PlanningCenterAPI
 {
+	/// <summary>
+	/// Handle all API call and returning of data from Planning Center
+	/// </summary>
 	public class PlanningCenter : IDisposable
 	{
+		public IPeople People {  get; private set; }
+
 		private Client client;
 		private RateLimiter rateLimiter;
 		private bool disposedValue;
@@ -12,6 +19,8 @@ namespace PlanningCenterAPI
 		{
 			client = new Client();
 			rateLimiter = new RateLimiter(client);
+
+			People = new People(rateLimiter);
 		}
 
 		protected virtual void Dispose(bool disposing)

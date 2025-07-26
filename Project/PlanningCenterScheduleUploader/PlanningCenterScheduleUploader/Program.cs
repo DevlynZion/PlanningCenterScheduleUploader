@@ -1,6 +1,8 @@
 ﻿using System.Net.Http.Json;
 using System.Text;
+using PlanningCenterAPI;
 using PlanningCenterAPI.Helper;
+using PlanningCenterAPI.Type;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -8,8 +10,18 @@ namespace PlanningCenterScheduleUploader
 	{
 		static void Main(string[] args)
 		{
-			//Test3();
+			Test4(); 
 			Console.ReadKey();
+		}
+
+		static async void Test4()
+		{
+			using (PlanningCenter pco = new PlanningCenter())
+			{
+				var data = await pco.People.GetPeople();
+
+				Console.WriteLine($"Data returned = {data.Data.Count}");
+			}
 		}
 
 		/*static async void Test3()
@@ -47,6 +59,7 @@ namespace PlanningCenterScheduleUploader
 				var responseData = await response.Content.ReadFromJsonAsync<Root>();
 				Console.WriteLine(responseData);
 			}
+			Console.ReadKey();
 		}
 
 		static async void Test()
@@ -64,30 +77,7 @@ namespace PlanningCenterScheduleUploader
 				var responseString = await response.Content.ReadAsStringAsync();
 				Console.WriteLine(responseString);
 			}
+			Console.ReadKey();
 		}
-	}
-
-	public class Root
-	{
-		public Links Links { get; set; }
-		public List<Data> Data { get; set; }
-
-		public override string ToString()
-		{
-			return $"Data={Data.Count}";
-		}
-	}
-
-
-	public class Links
-	{
-		public string Self { get; set; }
-		public string Next { get; set; }
-	}
-
-	public class Data
-	{
-		public string Type { get; set; }
-		public string Id { get; set; }
 	}
 }
