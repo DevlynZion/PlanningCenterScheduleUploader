@@ -2,11 +2,10 @@
 using System.Text;
 using PlanningCenterAPI;
 using PlanningCenterAPI.Helper;
-using PlanningCenterAPI.Type.Old;
 
 namespace PlanningCenterScheduleUploader
 {
-    internal class Program
+	internal class Program
 	{
 		const int StressIterations = 150;
 		const int ProgramWait = 100000;
@@ -15,7 +14,7 @@ namespace PlanningCenterScheduleUploader
 		{
 			TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
-			Test4();
+			TestPeople();
 
 
 			Console.WriteLine($"Program Done");
@@ -62,7 +61,7 @@ namespace PlanningCenterScheduleUploader
 			}
 		}
 
-		static async void Test4()
+		static async void TestPeople()
 		{
 			using (PlanningCenter pco = new PlanningCenter())
 			{
@@ -70,43 +69,6 @@ namespace PlanningCenterScheduleUploader
 
 				Console.WriteLine($"Data returned = {data.data.Count}");
 			}
-		}
-
-		static async void Test2()
-		{
-			var handler = new SocketsHttpHandler()
-			{
-				PooledConnectionLifetime = TimeSpan.FromMinutes(2),
-			};
-
-			using (HttpClient client = new HttpClient(handler))
-			{
-				client.BaseAddress = new Uri("https://api.planningcenteronline.com");
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(AuthenticationHelper.GetCredentials())));
-				var response = await client.GetAsync("/services/v2/people");
-				response.EnsureSuccessStatusCode();
-				var responseData = await response.Content.ReadFromJsonAsync<Root>();
-				Console.WriteLine(responseData);
-			}
-			Console.ReadKey();
-		}
-
-		static async void Test()
-		{
-			var handler = new SocketsHttpHandler()
-			{
-				PooledConnectionLifetime = TimeSpan.FromMinutes(2),
-			};
-
-			using (HttpClient client = new HttpClient(handler))
-			{
-				client.BaseAddress = new Uri("https://api.planningcenteronline.com");
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(AuthenticationHelper.GetCredentials())));
-				var response = await client.GetAsync("/people/v2/people");
-				var responseString = await response.Content.ReadAsStringAsync();
-				Console.WriteLine(responseString);
-			}
-			Console.ReadKey();
 		}
 	}
 }

@@ -2,11 +2,10 @@
 using PlanningCenterAPI.Call.Implementation.Request;
 using PlanningCenterAPI.Core;
 using PlanningCenterAPI.Type.Implementation;
-using PlanningCenterAPI.Type.Old;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
-    public class People : IPeople
+	public class People : IPeople
 	{
 		private RateLimiter rateLimiter;
 
