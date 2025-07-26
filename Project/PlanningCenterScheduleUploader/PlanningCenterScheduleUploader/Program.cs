@@ -7,11 +7,51 @@ using PlanningCenterAPI.Type;
 namespace PlanningCenterScheduleUploader
 {
 	internal class Program
-	{
+	{ 
+		const int StressIterations = 150;
+		const int ProgramWait = 100000;
+
 		static void Main(string[] args)
 		{
-			Test4(); 
+			//Test4();
+
+			StressTest1().GetAwaiter();
+
+			Console.WriteLine($"Program Done");
 			Console.ReadKey();
+		}
+
+
+		static async Task StressTest1()
+		{
+			// To fail test set RateLimiter.RequestRateLimit higher than 100
+			using (PlanningCenter pco = new PlanningCenter())
+			{
+				for (int i = 0; i < StressIterations; i++)
+				{
+					StressWork1(i, pco);
+				}
+
+				await Task.Delay(ProgramWait);
+				Console.WriteLine($"Stress Test Done!");
+			}
+		}
+		static async Task StressWork1(int k, PlanningCenter pco)
+		{
+			Console.WriteLine($"{k} Submitted");
+			try
+			{
+				var data = await pco.People.GetPeople();
+				Console.WriteLine($"{k} Data returned = {data.Data.Count}");
+			}
+			catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+			{
+				Console.WriteLine($"{k} TooManyRequests must handle");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+			}
 		}
 
 		static async void Test4()

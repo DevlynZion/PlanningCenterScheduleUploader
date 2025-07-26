@@ -18,7 +18,16 @@ namespace PlanningCenterAPI.Call.Implementation.Request
 
 		public async Task PerformRequest(Client client)
 		{
-			TaskProgress.TrySetResult(await client.Get<Root>(endpoint));
+			try
+			{
+				var data = await client.Get<Root>(endpoint);
+				TaskProgress.SetResult(data);
+			}
+			catch (Exception ex)
+			{
+				TaskProgress.SetException(ex);
+				throw;
+			}
 		}
 	}
 }

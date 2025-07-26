@@ -35,7 +35,9 @@ namespace PlanningCenterAPI.Core
 
 			response.EnsureSuccessStatusCode();
 
-			return await response.Content.ReadFromJsonAsync<T>();
+			var data = await response.Content.ReadFromJsonAsync<T>();
+
+			return data;
 		}
 
 		public async Task Post<T>(string endpoint, T data)

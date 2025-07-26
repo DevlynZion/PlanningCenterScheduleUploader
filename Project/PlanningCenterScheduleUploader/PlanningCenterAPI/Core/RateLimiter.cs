@@ -8,7 +8,7 @@ namespace PlanningCenterAPI.Core
 	internal class RateLimiter : IDisposable
 	{
 		private const double RequestRatePeriod = 20d;
-		private const int RequestRateLimit= 100;
+		private const int RequestRateLimit = 100;
 
 		private readonly TimeSpan delay;
 		private readonly Client client;
@@ -38,13 +38,13 @@ namespace PlanningCenterAPI.Core
 
 		private async void ProcessRequests()
 		{
-			while(isRunning)
+			while (isRunning)
 			{
 				if (!requests.Any())
 					continue;
 
 				var request = requests.Dequeue();
-				await request.PerformRequest(client);
+				_ = request.PerformRequest(client);
 				await Task.Delay(delay);
 			}
 		}
