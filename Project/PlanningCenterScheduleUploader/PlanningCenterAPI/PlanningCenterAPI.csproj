@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Call\Core\Base\" />
-    <Folder Include="Core\Base\" />
-  </ItemGroup>
-
 </Project>
