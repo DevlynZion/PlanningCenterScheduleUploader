@@ -1,8 +1,7 @@
 ﻿namespace PlanningCenterAPI.Type
 {
-	public class Root
+	public class Parent
 	{
-		public Links links { get; set; }
 		public List<Data> data { get; set; }
 	}
 }

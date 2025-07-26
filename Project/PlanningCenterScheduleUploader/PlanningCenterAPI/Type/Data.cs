@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PlanningCenterAPI.Type
+﻿namespace PlanningCenterAPI.Type
 {
 	public class Data
 	{
-		public string Type { get; set; }
-		public string Id { get; set; }
+		public string type { get; set; }
+		public string id { get; set; }
+		public Attributes attributes { get; set; }
+		public Relationships relationships { get; set; }
+		public Links links { get; set; }
 	}
 }

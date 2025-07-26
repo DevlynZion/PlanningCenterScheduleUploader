@@ -9,7 +9,8 @@ namespace PlanningCenterAPI
 	/// </summary>
 	public class PlanningCenter : IDisposable
 	{
-		public IPeople People {  get; private set; }
+		public IPeople People { get; private set; }
+		public IServices Services { get; private set; }
 
 		private Client client;
 		private RateLimiter rateLimiter;
@@ -21,6 +22,7 @@ namespace PlanningCenterAPI
 			rateLimiter = new RateLimiter(client);
 
 			People = new People(rateLimiter);
+			Services = new Services(rateLimiter);
 		}
 
 		protected virtual void Dispose(bool disposing)

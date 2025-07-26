@@ -13,14 +13,22 @@ namespace PlanningCenterScheduleUploader
 
 		static void Main(string[] args)
 		{
-			//Test4();
+			TestQueryNeededPosition().Wait();
+			//StressTest1().Wait();
+			Test4();
 
-			StressTest1().GetAwaiter();
 
 			Console.WriteLine($"Program Done");
 			Console.ReadKey();
 		}
 
+		static async Task TestQueryNeededPosition()
+		{
+			using (PlanningCenter pco = new PlanningCenter())
+			{
+				var data = await pco.Services.GetService_types();
+			}
+		}
 
 		static async Task StressTest1()
 		{
@@ -42,7 +50,7 @@ namespace PlanningCenterScheduleUploader
 			try
 			{
 				var data = await pco.People.GetPeople();
-				Console.WriteLine($"{k} Data returned = {data.Data.Count}");
+				Console.WriteLine($"{k} Data returned = {data.data.Count}");
 			}
 			catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
 			{
@@ -60,28 +68,9 @@ namespace PlanningCenterScheduleUploader
 			{
 				var data = await pco.People.GetPeople();
 
-				Console.WriteLine($"Data returned = {data.Data.Count}");
+				Console.WriteLine($"Data returned = {data.data.Count}");
 			}
 		}
-
-		/*static async void Test3()
-		{
-			var handler = new SocketsHttpHandler()
-			{
-				PooledConnectionLifetime = TimeSpan.FromMinutes(2),
-			};
-
-			using (HttpClient client = new HttpClient(handler))
-			{
-				client.BaseAddress = new Uri("https://api.planningcenteronline.com");
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(AuthenticationHelper.GetCredentials())));
-
-				var request = new Services(client);
-				var data = await request.GetPeople();
-
-				Console.WriteLine($"Data returned = {data.Data.Count}");
-			}
-		}*/
 
 		static async void Test2()
 		{
