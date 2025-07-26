@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterScheduleUploader", "PlanningCenterScheduleUploader\PlanningCenterScheduleUploader.csproj", "{34AB12D6-C99D-4F7F-9BC3-D4743BA1977E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningCenterAPI", "PlanningCenterAPI\PlanningCenterAPI.csproj", "{53FAE42B-E9FC-4883-BB24-7C02B6540598}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterAPI", "PlanningCenterAPI\PlanningCenterAPI.csproj", "{53FAE42B-E9FC-4883-BB24-7C02B6540598}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterAPI.Test", "PlanningCenterAPI.Test\PlanningCenterAPI.Test.csproj", "{5B72263A-ECC6-4E27-8E10-27E7313DEBE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{34AB12D6-C99D-4F7F-9BC3-D4743BA1977E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34AB12D6-C99D-4F7F-9BC3-D4743BA1977E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34AB12D6-C99D-4F7F-9BC3-D4743BA1977E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34AB12D6-C99D-4F7F-9BC3-D4743BA1977E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53FAE42B-E9FC-4883-BB24-7C02B6540598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53FAE42B-E9FC-4883-BB24-7C02B6540598}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53FAE42B-E9FC-4883-BB24-7C02B6540598}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53FAE42B-E9FC-4883-BB24-7C02B6540598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B72263A-ECC6-4E27-8E10-27E7313DEBE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B72263A-ECC6-4E27-8E10-27E7313DEBE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B72263A-ECC6-4E27-8E10-27E7313DEBE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B72263A-ECC6-4E27-8E10-27E7313DEBE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
