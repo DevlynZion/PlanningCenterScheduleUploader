@@ -1,6 +1,8 @@
-﻿namespace PlanningCenterAPI.Type.Implementation.Attribute
+﻿using PlanningCenterAPI.Core.Interface;
+
+namespace PlanningCenterAPI.Type.Implementation.Attribute
 {
-	public class PeopleAttribute
+	public class PeopleAttribute : IAttribute
 	{
 		public string archived_at { get; set; }
 		public bool accounting_administrator { get; set; }

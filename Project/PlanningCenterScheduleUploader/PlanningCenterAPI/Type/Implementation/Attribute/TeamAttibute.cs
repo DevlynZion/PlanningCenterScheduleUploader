@@ -1,6 +1,8 @@
-﻿namespace PlanningCenterAPI.Type.Implementation.Attribute
+﻿using PlanningCenterAPI.Core.Interface;
+
+namespace PlanningCenterAPI.Type.Implementation.Attribute
 {
-	public class TeamAttibute
+	public class TeamAttibute : IAttribute
 	{
 		public string archived_at { get; set; }
 		public bool assigned_directly { get; set; }

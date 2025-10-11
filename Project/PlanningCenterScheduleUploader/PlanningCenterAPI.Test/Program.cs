@@ -2,6 +2,8 @@
 using System.Text;
 using PlanningCenterAPI;
 using PlanningCenterAPI.Helper;
+using PlanningCenterAPI.Type.Implementation;
+using PlanningCenterAPI.Type.Implementation.Attribute;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -57,6 +59,23 @@ namespace PlanningCenterScheduleUploader
 				}
 
 				Console.WriteLine($"{team.id} {team.attributes.name}");
+
+				var nextTeamPositions = await pco.Services.GetTeamPositionsByService_typeId(serviceType.id);
+
+				Console.WriteLine($"TeamPositions");
+				Console.WriteLine($"=============");
+
+				while (!string.IsNullOrEmpty(nextTeamPositions.links.next))
+				{
+					foreach (var teamPosition in nextTeamPositions.data)
+					{
+						Console.WriteLine($"{teamPosition.id} {teamPosition.attributes.name}");
+					}
+					nextTeamPositions = await pco.Services.GetNextRequest<TeamPositionResponse>(nextTeamPositions.links);
+				}
+				//https://api.planningcenteronline.com/services/v2/teams?include=person_team_position_assignments&where[name]=Live Stream
+				//https://api.planningcenteronline.com/services/v2/service_types/1235720/plans?where[id]=77741849
+
 			}
 		}
 

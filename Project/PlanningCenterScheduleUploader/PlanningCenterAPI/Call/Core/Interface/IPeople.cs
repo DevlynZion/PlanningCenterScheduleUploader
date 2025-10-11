@@ -2,7 +2,7 @@
 
 namespace PlanningCenterAPI.Call.Core.Interface
 {
-	public interface IPeople
+	public interface IPeople : ICall
 	{
 		public Task<PeopleResponse> GetPeople();
 	}
