@@ -16,9 +16,10 @@ namespace PlanningCenterAPI
 		private RateLimiter rateLimiter;
 		private bool disposedValue;
 
-		public PlanningCenter()
+		public PlanningCenter(bool captureRespone = false)
 		{
 			client = new Client();
+			client.CaptureRespone = captureRespone;
 			rateLimiter = new RateLimiter(client);
 
 			People = new People(rateLimiter);

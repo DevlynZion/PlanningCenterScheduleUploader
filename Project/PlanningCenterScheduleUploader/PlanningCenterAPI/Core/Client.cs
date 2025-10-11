@@ -10,6 +10,8 @@ namespace PlanningCenterAPI.Core
 	/// </summary>
 	internal class Client : IDisposable
 	{
+		internal bool CaptureRespone { get; set; }
+
 		private const string BaseAddress = "https://api.planningcenteronline.com";
 
 		private HttpClient httpClient;
@@ -34,8 +36,9 @@ namespace PlanningCenterAPI.Core
 			var response = await httpClient.GetAsync(endpoint);
 			response.EnsureSuccessStatusCode();
 
-			var a = await response.Content.ReadAsStringAsync();
-			File.WriteAllText("Respone.txt", a.ToString());
+			var stringResponse = await response.Content.ReadAsStringAsync();
+			if(CaptureRespone)
+				File.WriteAllText("Respone.txt", stringResponse.ToString());
 
 			var data = await response.Content.ReadFromJsonAsync<T>();
 			return data;

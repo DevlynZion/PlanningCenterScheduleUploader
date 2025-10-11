@@ -14,7 +14,7 @@ namespace PlanningCenterScheduleUploader
 		{
 			TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
-			TestPeople();
+			//TestPeople();
 
 
 			Console.WriteLine($"Program Done");
@@ -23,9 +23,40 @@ namespace PlanningCenterScheduleUploader
 
 		static async Task TestQueryNeededPosition()
 		{
-			using (PlanningCenter pco = new PlanningCenter())
+			using (PlanningCenter pco = new PlanningCenter(true))
 			{
-				var data = await pco.Services.GetService_types();
+				var serviceTypes = await pco.Services.GetService_types();
+				var serviceType = serviceTypes.data.FirstOrDefault(d => d.attributes.name == "Sunday and Other Services");
+
+				if(serviceType == null)
+				{
+					Console.WriteLine("Could not find ServiceType");
+					return;
+				}
+
+				Console.WriteLine($"{serviceType.id} {serviceType.attributes.name}");
+
+				var planTemplates = await pco.Services.GetPlan_templatesByService_typeId(serviceType.id);
+				var planTemplate = planTemplates.data.FirstOrDefault();
+
+				if (planTemplate == null)
+				{
+					Console.WriteLine("Could not find PlanTemplate");
+					return;
+				}
+
+				Console.WriteLine($"{planTemplate.id} {planTemplate.attributes.name}");
+
+				var teams = await pco.Services.GetTeamsByService_typeId(serviceType.id);
+				var team = teams.data.FirstOrDefault(d => d.attributes.name == "Live Stream");
+
+				if (team == null)
+				{
+					Console.WriteLine("Could not find Team");
+					return;
+				}
+
+				Console.WriteLine($"{team.id} {team.attributes.name}");
 			}
 		}
 

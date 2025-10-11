@@ -2,7 +2,7 @@
 
 namespace PlanningCenterAPI.Type.Implementation
 {
-	public class ServicesResponse : RootBase<ServiceAttribute>
+	public class TeamResponse : RootBase<TeamAttibute>
 	{
 	}
 }

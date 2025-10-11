@@ -1,24 +1,17 @@
-﻿using PlanningCenterAPI.Call.Core.Interface;
-using PlanningCenterAPI.Call.Implementation.Request;
+﻿using PlanningCenterAPI.Call.Core.Base;
+using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Core;
 using PlanningCenterAPI.Type.Implementation;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
-	public class People : IPeople
+	public class People : CallBase, IPeople
 	{
-		private RateLimiter rateLimiter;
-
-		internal People(RateLimiter rateLimiter)
-		{
-			this.rateLimiter = rateLimiter;
-		}
+		internal People(RateLimiter rateLimiter) : base(rateLimiter) { }
 
 		public async Task<PeopleResponse> GetPeople()
 		{
-			var request = new GetRequest<PeopleResponse>("/services/v2/people");
-
-			return await rateLimiter.EnqueueAsync(request);
+			return await GetRequest<PeopleResponse>("/services/v2/people");
 		}
 	}
 }

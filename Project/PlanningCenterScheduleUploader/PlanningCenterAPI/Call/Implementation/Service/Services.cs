@@ -1,24 +1,27 @@
-﻿using PlanningCenterAPI.Call.Core.Interface;
-using PlanningCenterAPI.Call.Implementation.Request;
+﻿using PlanningCenterAPI.Call.Core.Base;
+using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Core;
 using PlanningCenterAPI.Type.Implementation;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
-	public class Services : IServices
+	public class Services : CallBase, IServices
 	{
-		private RateLimiter rateLimiter;
-
-		internal Services(RateLimiter rateLimiter)
-		{
-			this.rateLimiter = rateLimiter;
-		}
+		internal Services(RateLimiter rateLimiter) : base(rateLimiter) {}
 
 		public async Task<ServicesResponse> GetService_types()
 		{
-			var request = new GetRequest<ServicesResponse>("/services/v2/service_types");
+			return await GetRequest<ServicesResponse>("/services/v2/service_types");
+		}
 
-			return await rateLimiter.EnqueueAsync(request);
+		public async Task<ServicesResponse> GetPlan_templatesByService_typeId(string id)
+		{
+			return await GetRequest<ServicesResponse>($"/services/v2/service_types/{id}/plan_templates");
+		}
+
+		public async Task<TeamResponse> GetTeamsByService_typeId(string id)
+		{
+			return await GetRequest<TeamResponse>($"/services/v2/service_types/{id}/teams");
 		}
 	}
 }
