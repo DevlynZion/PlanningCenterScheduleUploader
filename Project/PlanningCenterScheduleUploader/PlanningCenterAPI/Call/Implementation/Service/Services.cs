@@ -2,6 +2,7 @@
 using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Core;
 using PlanningCenterAPI.Type.Implementation;
+using System.Dynamic;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
@@ -26,7 +27,7 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 
 		public async Task<TeamResponse> GetTeamsById(string id)
 		{
-			return await GetRequest<TeamResponse>($"/services/v2/teams/5948513/{id}");
+			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}");
 		}
 
 		public async Task<TeamPositionResponse> GetTeamPositionsByService_typeId(string id)
@@ -42,6 +43,11 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		public async Task<TeamPositionResponse> GetTeamPositionsByTeamID(string id)
 		{
 			return await GetRequest<TeamPositionResponse>($"/services/v2/teams/{id}?include=team_positions");
+		}
+
+		public async Task<ExpandoObject> GetTestByID(string id)
+		{
+			return await GetRequest<ExpandoObject>($"/services/v2/teams/{id}");
 		}
 	}
 }

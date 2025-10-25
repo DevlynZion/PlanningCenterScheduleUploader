@@ -1,4 +1,5 @@
 ﻿using PlanningCenterAPI.Type.Implementation;
+using System.Dynamic;
 
 namespace PlanningCenterAPI.Call.Core.Interface
 {
@@ -11,5 +12,6 @@ namespace PlanningCenterAPI.Call.Core.Interface
 		public Task<TeamPositionResponse> GetTeamPositionsByService_typeId(string id);
 		public Task<PeopleResponse> GetPeoplesByTeamID(string id);
 		public Task<TeamPositionResponse> GetTeamPositionsByTeamID(string id);
+		public Task<ExpandoObject> GetTestByID(string id);
 	}
 }

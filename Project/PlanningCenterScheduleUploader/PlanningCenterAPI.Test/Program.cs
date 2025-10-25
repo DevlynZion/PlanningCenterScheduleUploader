@@ -4,8 +4,10 @@ using PlanningCenterAPI.Helper;
 using PlanningCenterAPI.Type;
 using PlanningCenterAPI.Type.Implementation;
 using PlanningCenterAPI.Type.Implementation.Attribute;
+using System.Dynamic;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -23,13 +25,29 @@ namespace PlanningCenterScheduleUploader
 
 		static void Main(string[] args)
 		{
-			TestQueryNeededPosition().Wait();
+			TestDynamic().Wait();
+			//TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
 			//TestPeople();
 
 
 			Console.WriteLine($"Program Done");
 			Console.ReadKey();
+		}
+
+		static async Task TestDynamic()
+		{
+			// https://www.youtube.com/watch?v=os7BGpEtkMQ
+			using (PlanningCenter pco = new PlanningCenter(true, true, true))
+			{
+				dynamic response = await pco.Services.GetTestByID("5948513");
+
+				//IDictionary<string, object> root = (IDictionary<string, object>)response;
+				dynamic root = (IDictionary<string, object>)response;
+				dynamic data = (IDictionary<string, object>)root["data"];
+
+				Console.WriteLine(root["data"]);
+			}
 		}
 
 		static async Task TestQueryNeededPosition()
