@@ -12,3 +12,6 @@ Can also use the VS Special Paste to create classes
 
 https://github.com/RicoSuter/NJsonSchema
 Seem to be behind a pay wall
+
+
+https://json2csharp.com/
