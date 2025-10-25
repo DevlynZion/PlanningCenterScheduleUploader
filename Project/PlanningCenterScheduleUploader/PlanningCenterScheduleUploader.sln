@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterAPI.Test", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterScheduleUploader", "PlanningCenterScheduleUploader\PlanningCenterScheduleUploader.csproj", "{B69E436A-4BD5-4153-9691-1E3CA303165D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterAPI.Generate", "PlanningCenterAPI.Generate\PlanningCenterAPI.Generate.csproj", "{4559C35A-FA0A-4325-9A5E-E1AAC9E3CD7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B69E436A-4BD5-4153-9691-1E3CA303165D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B69E436A-4BD5-4153-9691-1E3CA303165D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B69E436A-4BD5-4153-9691-1E3CA303165D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4559C35A-FA0A-4325-9A5E-E1AAC9E3CD7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4559C35A-FA0A-4325-9A5E-E1AAC9E3CD7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4559C35A-FA0A-4325-9A5E-E1AAC9E3CD7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4559C35A-FA0A-4325-9A5E-E1AAC9E3CD7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
