@@ -26,7 +26,7 @@ namespace PlanningCenterAPI.Type.Implementation.Attribute
 		public string medical_notes { get; set; }
 		public string membership { get; set; }
 		public string middle_name { get; set; }
-		public string name { get; set; }
+		public string Name => $"{first_name} {last_name}";
 		public string nickname { get; set; }
 		public bool passed_background_check { get; set; }
 		public string people_permissions { get; set; }

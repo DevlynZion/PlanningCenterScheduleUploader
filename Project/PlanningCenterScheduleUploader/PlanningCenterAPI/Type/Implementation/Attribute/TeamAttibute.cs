@@ -11,6 +11,7 @@ namespace PlanningCenterAPI.Type.Implementation.Attribute
 		public string default_status { get; set; }
 		public string last_plan_from { get; set; }
 		public string name { get; set; }
+		public string Name => name;
 		public bool rehearsal_team { get; set; }
 		public string schedule_to { get; set; }
 		public bool secure_team { get; set; }

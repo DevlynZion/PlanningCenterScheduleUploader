@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace PlanningCenterAPI.Core
 {
@@ -10,6 +11,8 @@ namespace PlanningCenterAPI.Core
 	/// </summary>
 	internal class Client : IDisposable
 	{
+		internal bool CaptureEndPoint { get; set; }
+		internal bool CaptureRequest{ get; set; }
 		internal bool CaptureRespone { get; set; }
 
 		private const string BaseAddress = "https://api.planningcenteronline.com";
@@ -33,14 +36,19 @@ namespace PlanningCenterAPI.Core
 
 		public async Task<T> Get<T>(string endpoint)
 		{
+			if (CaptureEndPoint)
+				File.WriteAllText("EndPoint.txt", endpoint);
+
 			var response = await httpClient.GetAsync(endpoint);
 			response.EnsureSuccessStatusCode();
 
-			var stringResponse = await response.Content.ReadAsStringAsync();
-			if(CaptureRespone)
+			if (CaptureRespone)
+			{
+				var stringResponse = await response.Content.ReadAsStringAsync();
 				File.WriteAllText("Respone.txt", stringResponse.ToString());
+			}
 
-			var data = await response.Content.ReadFromJsonAsync<T>();
+			var data = await response.Content.ReadFromJsonAsync<T>( new JsonSerializerOptions() { PropertyNameCaseInsensitive = false });
 			return data;
 		}
 

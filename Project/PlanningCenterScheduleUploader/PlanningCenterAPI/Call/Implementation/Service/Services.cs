@@ -24,9 +24,24 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 			return await GetRequest<TeamResponse>($"/services/v2/service_types/{id}/teams");
 		}
 
+		public async Task<TeamResponse> GetTeamsById(string id)
+		{
+			return await GetRequest<TeamResponse>($"/services/v2/teams/5948513/{id}");
+		}
+
 		public async Task<TeamPositionResponse> GetTeamPositionsByService_typeId(string id)
 		{
 			return await GetRequest<TeamPositionResponse>($"/services/v2/service_types/{id}/team_positions");
+		}
+
+		public async Task<PeopleResponse> GetPeoplesByTeamID(string id)
+		{
+			return await GetRequest<PeopleResponse>($"/services/v2/teams/{id}/people");
+		}
+
+		public async Task<TeamPositionResponse> GetTeamPositionsByTeamID(string id)
+		{
+			return await GetRequest<TeamPositionResponse>($"/services/v2/teams/{id}?include=team_positions");
 		}
 	}
 }

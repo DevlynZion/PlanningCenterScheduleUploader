@@ -14,6 +14,7 @@ namespace PlanningCenterAPI.Type.Implementation.Attribute
 		public string frequency { get; set; }
 		public string last_plan_from { get; set; }
 		public string name { get; set; }
+		public string? Name => name;
 		public string permissions { get; set; }
 		public bool scheduled_publish { get; set; }
 		public int sequence { get; set; }

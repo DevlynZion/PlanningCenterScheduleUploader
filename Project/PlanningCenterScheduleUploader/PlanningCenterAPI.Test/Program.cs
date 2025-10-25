@@ -1,9 +1,11 @@
-﻿using System.Net.Http.Json;
-using System.Text;
-using PlanningCenterAPI;
+﻿using PlanningCenterAPI;
+using PlanningCenterAPI.Core.Interface;
 using PlanningCenterAPI.Helper;
+using PlanningCenterAPI.Type;
 using PlanningCenterAPI.Type.Implementation;
 using PlanningCenterAPI.Type.Implementation.Attribute;
+using System.Net.Http.Json;
+using System.Text;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -11,6 +13,13 @@ namespace PlanningCenterScheduleUploader
 	{
 		const int StressIterations = 150;
 		const int ProgramWait = 100000;
+
+		static Dictionary<string, ServiceAttribute> ServiceTypes = new Dictionary<string, ServiceAttribute>();
+		static Dictionary<string, ServiceAttribute> PlanTemplates = new Dictionary<string, ServiceAttribute>();
+		static Dictionary<string, TeamAttibute> Team = new Dictionary<string, TeamAttibute>();
+		static Dictionary<string, TeamPositionAttribute> TeamPositions = new Dictionary<string, TeamPositionAttribute>();
+		static Dictionary<string, PeopleAttribute> PeopleOnTeam = new Dictionary<string, PeopleAttribute>();
+		static Dictionary<string, TeamPositionAttribute> TeamPositionsOnTeam = new Dictionary<string, TeamPositionAttribute>();
 
 		static void Main(string[] args)
 		{
@@ -25,57 +34,173 @@ namespace PlanningCenterScheduleUploader
 
 		static async Task TestQueryNeededPosition()
 		{
-			using (PlanningCenter pco = new PlanningCenter(true))
+			using (PlanningCenter pco = new PlanningCenter(true, true, true))
 			{
 				var serviceTypes = await pco.Services.GetService_types();
-				var serviceType = serviceTypes.data.FirstOrDefault(d => d.attributes.name == "Sunday and Other Services");
-
-				if(serviceType == null)
+				var serviceTypeID = await GetEntity(pco, serviceTypes, "ServiceTypes", ServiceTypes, "1235720");
+				if (string.IsNullOrEmpty(serviceTypeID))
 				{
-					Console.WriteLine("Could not find ServiceType");
 					return;
 				}
 
-				Console.WriteLine($"{serviceType.id} {serviceType.attributes.name}");
+				//var planTemplates = await pco.Services.GetPlan_templatesByService_typeId(serviceTypeID);
+				//var planTemplateID = await GetEntity(pco, planTemplates, "PlanTemplates", PlanTemplates);
+				//if (string.IsNullOrEmpty(planTemplateID))
+				//{
+				//	return;
+				//}
 
-				var planTemplates = await pco.Services.GetPlan_templatesByService_typeId(serviceType.id);
-				var planTemplate = planTemplates.data.FirstOrDefault();
-
-				if (planTemplate == null)
+				var teams = await pco.Services.GetTeamsByService_typeId(serviceTypeID);
+				var teamID = await GetEntity(pco, teams, "Team", Team, "5948513");
+				if (string.IsNullOrEmpty(teamID))
 				{
-					Console.WriteLine("Could not find PlanTemplate");
 					return;
 				}
 
-				Console.WriteLine($"{planTemplate.id} {planTemplate.attributes.name}");
 
-				var teams = await pco.Services.GetTeamsByService_typeId(serviceType.id);
-				var team = teams.data.FirstOrDefault(d => d.attributes.name == "Live Stream");
+				//var teamPositions = await pco.Services.GetTeamPositionsByService_typeId(serviceTypeID);
+				//var teamPositionsIDs = await GetEntities(pco, teamPositions, "TeamPositions", TeamPositions, "31782683,31782685,31782687,31782881");
+				//if (teamPositionsIDs.Count == 0)
+				//{
+				//	return;
+				//}
 
-				if (team == null)
-				{
-					Console.WriteLine("Could not find Team");
-					return;
-				}
+				var peopleOnTeam = await pco.Services.GetPeoplesByTeamID(teamID);
+				var peopleOnTeamIds = await GetEntities(pco, peopleOnTeam, "People", PeopleOnTeam);
+				//if (peopleOnTeamIds.Count == 0)
+				//{
+				//	return;
+				//}
 
-				Console.WriteLine($"{team.id} {team.attributes.name}");
+				var teamPositionsOnTeam = await pco.Services.GetTeamPositionsByTeamID(teamID);
+				var teamPositionsOnTeamIds = await GetEntities(pco, teamPositionsOnTeam, "TeamPositions", TeamPositionsOnTeam);
+				//if (peopleOnTeamIds.Count == 0)
+				//{
+				//	return;
+				//}
 
-				var nextTeamPositions = await pco.Services.GetTeamPositionsByService_typeId(serviceType.id);
-
-				Console.WriteLine($"TeamPositions");
-				Console.WriteLine($"=============");
-
-				while (!string.IsNullOrEmpty(nextTeamPositions.links.next))
-				{
-					foreach (var teamPosition in nextTeamPositions.data)
-					{
-						Console.WriteLine($"{teamPosition.id} {teamPosition.attributes.name}");
-					}
-					nextTeamPositions = await pco.Services.GetNextRequest<TeamPositionResponse>(nextTeamPositions.links);
-				}
 				//https://api.planningcenteronline.com/services/v2/teams?include=person_team_position_assignments&where[name]=Live Stream
 				//https://api.planningcenteronline.com/services/v2/service_types/1235720/plans?where[id]=77741849
 
+			}
+		}
+
+		private static async Task<string> GetEntity<R, D>(PlanningCenter pco, R results, string entityName, Dictionary<string, D> collection, string defaultChoice = null) where R : RootBase<D> where D : IAttribute
+		{
+			string id;
+			collection = await GetResults<R, D>(pco, results, entityName);
+
+			if (collection.Count > 1)
+			{
+				id = GetUserSelection(entityName, defaultChoice);
+				if (id == null)
+				{
+					return string.Empty;
+				}
+			}
+			else
+			{
+				id = GetUserSelection(entityName, collection.First().Key);
+				if (id == null)
+				{
+					return string.Empty;
+				}
+			}
+
+			return id;
+		}
+
+		private static async Task<List<string>> GetEntities<R, D>(PlanningCenter pco, R results, string entityName, Dictionary<string, D> collection, string defaultChoice = null) where R : RootBase<D> where D : IAttribute
+		{
+			collection = await GetResults<R, D>(pco, results, entityName);
+
+			if (collection.Count > 1)
+			{
+				return GetUserMutliSelection(entityName, defaultChoice);
+			}
+			else
+			{
+				return GetUserMutliSelection(entityName, collection.First().Key);
+			}
+		}
+
+		static async Task<Dictionary<string, D>> GetResults<R, D>(PlanningCenter pco, R results, string enityName) where R : RootBase<D> where D : IAttribute
+		{
+			Dictionary<string, D> collection = new Dictionary<string, D>();
+
+			Console.WriteLine(enityName);
+			Console.WriteLine("=".PadRight(enityName.Length, '='));
+
+			do
+			{
+				foreach (var result in results.data)
+				{
+					collection.Add(result.id, result.attributes);
+					Console.WriteLine($"{result.id} {result.attributes.Name}");
+				}
+				results = await pco.Services.GetNextRequest<R>(results.links);
+			} while (results != null);
+
+			Console.WriteLine();
+
+			return collection;
+		}
+
+		static string GetUserSelection(string entityName, string defaultChoice = null)
+		{
+			if (string.IsNullOrEmpty(defaultChoice))
+			{
+				Console.WriteLine("Enter ID:");
+			}
+			else
+			{
+				Console.WriteLine($"Enter ID or default will be [{defaultChoice}]:");
+			}
+
+			var idString = Console.ReadLine();
+
+			if (string.IsNullOrEmpty(idString) && string.IsNullOrEmpty(defaultChoice))
+			{
+				Console.WriteLine($"Could not find {entityName}");
+				return string.Empty;
+			}
+			else if(string.IsNullOrEmpty(idString) && !string.IsNullOrEmpty(defaultChoice))
+			{
+				return defaultChoice;
+			}
+			else
+			{
+				Console.WriteLine();
+				return idString;
+			}
+		}
+
+		static List<string> GetUserMutliSelection(string entityName, string defaultChoice = null)
+		{
+			if (string.IsNullOrEmpty(defaultChoice))
+			{
+				Console.WriteLine("Enter IDs:");
+			}
+			else
+			{
+				Console.WriteLine($"Enter IDs or default will be [{defaultChoice}]:");
+			}
+
+			var idsString = Console.ReadLine();
+
+			if (string.IsNullOrEmpty(idsString) && string.IsNullOrEmpty(defaultChoice))
+			{
+				Console.WriteLine($"Could not find {entityName}");
+				return new List<string>();
+			}
+			else if (string.IsNullOrEmpty(idsString) && !string.IsNullOrEmpty(defaultChoice))
+			{
+				return defaultChoice.Split(',').ToList();
+			}
+			else
+			{
+				Console.WriteLine();
+				return idsString.Split(',').ToList();
 			}
 		}
 
