@@ -4,6 +4,6 @@ namespace PlanningCenterAPI.Call.Core.Interface
 {
 	public interface IPeople : ICall
 	{
-		public Task<PeopleResponse> GetPeople();
+		public Task<PeoplesResponse> GetPeople();
 	}
 }

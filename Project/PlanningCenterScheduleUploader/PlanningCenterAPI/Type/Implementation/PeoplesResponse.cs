@@ -2,7 +2,7 @@
 
 namespace PlanningCenterAPI.Type.Implementation
 {
-	public class TeamPositionResponse : RootSingleResponeBase<TeamPositionAttribute>
+	public class PeoplesResponse : RootMultiResponeBase<PeopleAttribute>
 	{
 	}
 }

@@ -9,9 +9,9 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 	{
 		internal People(RateLimiter rateLimiter) : base(rateLimiter) { }
 
-		public async Task<PeopleResponse> GetPeople()
+		public async Task<PeoplesResponse> GetPeople()
 		{
-			return await GetRequest<PeopleResponse>("/services/v2/people");
+			return await GetRequest<PeoplesResponse>("/services/v2/people");
 		}
 	}
 }

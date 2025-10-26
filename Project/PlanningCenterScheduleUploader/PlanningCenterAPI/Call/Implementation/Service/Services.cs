@@ -19,14 +19,14 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 			return await GetRequest<ServicesResponse>($"/services/v2/service_types/{id}/plan_templates");
 		}
 
-		public async Task<TeamResponse> GetTeamsByService_typeId(string id)
+		public async Task<TeamsResponse> GetTeamsByService_typeId(string id)
 		{
-			return await GetRequest<TeamResponse>($"/services/v2/service_types/{id}/teams");
+			return await GetRequest<TeamsResponse>($"/services/v2/service_types/{id}/teams");
 		}
 
 		public async Task<TeamResponse> GetTeamsById(string id)
 		{
-			return await GetRequest<TeamResponse>($"/services/v2/teams/5948513/{id}");
+			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}");
 		}
 
 		public async Task<TeamPositionResponse> GetTeamPositionsByService_typeId(string id)
@@ -34,14 +34,14 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 			return await GetRequest<TeamPositionResponse>($"/services/v2/service_types/{id}/team_positions");
 		}
 
-		public async Task<PeopleResponse> GetPeoplesByTeamID(string id)
+		public async Task<PeoplesResponse> GetPeoplesByTeamID(string id)
 		{
-			return await GetRequest<PeopleResponse>($"/services/v2/teams/{id}/people");
+			return await GetRequest<PeoplesResponse>($"/services/v2/teams/{id}/people");
 		}
 
-		public async Task<TeamPositionResponse> GetTeamPositionsByTeamID(string id)
+		public async Task<TeamResponse> GetTeamPositionsByTeamID(string id)
 		{
-			return await GetRequest<TeamPositionResponse>($"/services/v2/teams/{id}?include=team_positions");
+			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}?include=team_positions");
 		}
 	}
 }
