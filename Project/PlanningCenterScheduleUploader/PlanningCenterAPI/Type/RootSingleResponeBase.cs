@@ -4,10 +4,10 @@ using PlanningCenterAPI.Type.TopLevel;
 
 namespace PlanningCenterAPI.Type
 {
-	public abstract class RootSingleResponeBase<T> : IRootRespone<Data<T>> where T : IAttribute
+	public abstract class RootSingleResponeBase<T> : IRootRespone<DataAttribute<T>> where T : IAttribute
 	{
 		public Links links { get; set; }
-		public Data<T> data { get; set; }
+		public DataAttribute<T> data { get; set; }
 		public List<Included> included { get; set; }
 		public Meta meta { get; set; }
 	}
