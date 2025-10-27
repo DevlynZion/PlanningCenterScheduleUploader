@@ -1,7 +1,7 @@
 ﻿using PlanningCenterAPI;
-using PlanningCenterAPI.Core.Interface;
 using PlanningCenterAPI.Helper;
 using PlanningCenterAPI.Type;
+using PlanningCenterAPI.Type.Core.Interface;
 using PlanningCenterAPI.Type.Implementation;
 using PlanningCenterAPI.Type.Implementation.Attribute;
 using System.Net.Http.Json;
@@ -43,8 +43,8 @@ namespace PlanningCenterScheduleUploader
 					return;
 				}
 
-				//var planTemplates = await pco.Services.GetPlan_templatesByService_typeId(serviceTypeIDs);
-				//var planTemplateID = await GetEntity(pco, planTemplates, "PlanTemplates", PlanTemplates);
+				var planTemplates = await pco.Services.GetPlan_templatesByService_typeId(serviceTypeIDs.First());
+				var planTemplateID = await GetEntities(pco, planTemplates, "PlanTemplates", PlanTemplates);
 				//if (string.IsNullOrEmpty(planTemplateID))
 				//{
 				//	return;
@@ -58,8 +58,8 @@ namespace PlanningCenterScheduleUploader
 				}
 
 
-				//var teamPositions = await pco.Services.GetTeamPositionsByService_typeId(serviceTypeIDs);
-				//var teamPositionsIDs = await GetEntities(pco, teamPositions, "TeamPositions", TeamPositions, "31782683,31782685,31782687,31782881");
+				var teamPositions = await pco.Services.GetTeamPositionsByService_typeId(serviceTypeIDs.First());
+				var teamPositionsIDs = await GetEntities(pco, teamPositions, "TeamPositions", TeamPositions, "31782683,31782685,31782687,31782881");
 				//if (teamPositionsIDs.Count == 0)
 				//{
 				//	return;

@@ -29,9 +29,9 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}");
 		}
 
-		public async Task<TeamPositionResponse> GetTeamPositionsByService_typeId(string id)
+		public async Task<TeamPositionsResponse> GetTeamPositionsByService_typeId(string id)
 		{
-			return await GetRequest<TeamPositionResponse>($"/services/v2/service_types/{id}/team_positions");
+			return await GetRequest<TeamPositionsResponse>($"/services/v2/service_types/{id}/team_positions");
 		}
 
 		public async Task<PeoplesResponse> GetPeoplesByTeamID(string id)

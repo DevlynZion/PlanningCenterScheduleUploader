@@ -1,4 +1,4 @@
-﻿using PlanningCenterAPI.Core.Interface;
+﻿using PlanningCenterAPI.Type.Core.Interface;
 
 namespace PlanningCenterAPI.Type.Implementation.Attribute
 {

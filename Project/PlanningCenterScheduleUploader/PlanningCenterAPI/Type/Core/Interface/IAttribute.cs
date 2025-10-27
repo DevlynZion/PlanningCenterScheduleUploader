@@ -1,4 +1,4 @@
-﻿namespace PlanningCenterAPI.Core.Interface
+﻿namespace PlanningCenterAPI.Type.Core.Interface
 {
 	public interface IAttribute
 	{

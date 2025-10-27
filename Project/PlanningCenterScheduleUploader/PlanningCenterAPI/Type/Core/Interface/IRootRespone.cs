@@ -1,6 +1,6 @@
 ﻿using PlanningCenterAPI.Type.TopLevel;
 
-namespace PlanningCenterAPI.Core.Interface
+namespace PlanningCenterAPI.Type.Core.Interface
 {
 	public interface IRootRespone<D> where D : class
 	{
