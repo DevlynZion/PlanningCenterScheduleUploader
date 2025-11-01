@@ -15,3 +15,6 @@ Seem to be behind a pay wall
 
 
 https://json2csharp.com/
+
+What I need:
+https://www.nuget.org/packages/Crews.PlanningCenter.Api
