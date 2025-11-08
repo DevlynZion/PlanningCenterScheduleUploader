@@ -14,19 +14,11 @@ namespace PlanningCenterScheduleUploader
 		const int StressIterations = 150;
 		const int ProgramWait = 100000;
 
-		static Dictionary<string, ServiceAttribute> ServiceTypes = new Dictionary<string, ServiceAttribute>();
-		static Dictionary<string, ServiceAttribute> PlanTemplates = new Dictionary<string, ServiceAttribute>();
-		static Dictionary<string, TeamAttibute> Team = new Dictionary<string, TeamAttibute>();
-		static Dictionary<string, TeamPositionAttribute> TeamPositions = new Dictionary<string, TeamPositionAttribute>();
-		static Dictionary<string, PeopleAttribute> PeopleOnTeam = new Dictionary<string, PeopleAttribute>();
-		static Dictionary<string, TeamAttibute> TeamPositionsOnTeam = new Dictionary<string, TeamAttibute>();
 
 		static void Main(string[] args)
 		{
 			TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
-			//TestPeople();
-
 
 			Console.WriteLine($"Program Done");
 			Console.ReadKey();
@@ -36,187 +28,117 @@ namespace PlanningCenterScheduleUploader
 		{
 			using (PlanningCenter pco = new PlanningCenter(true, true, true))
 			{
-				var serviceTypes = await pco.Services.GetService_types();
-				var serviceTypeIDs = await GetEntities(pco, serviceTypes, "ServiceTypes", ServiceTypes, "1235720");
-				if (serviceTypeIDs.Count == 0)
-				{
-					return;
-				}
-
-				var planTemplates = await pco.Services.GetPlan_templatesByService_typeId(serviceTypeIDs.First());
-				var planTemplateID = await GetEntities(pco, planTemplates, "PlanTemplates", PlanTemplates);
-				//if (string.IsNullOrEmpty(planTemplateID))
-				//{
-				//	return;
-				//}
-
-				var teams = await pco.Services.GetTeamsByService_typeId(serviceTypeIDs.First());
-				var teamIDs = await GetEntities(pco, teams, "Team", Team, "5948513");
-				if (teamIDs.Count == 0)
-				{
-					return;
-				}
-
-
-				var teamPositions = await pco.Services.GetTeamPositionsByService_typeId(serviceTypeIDs.First());
-				var teamPositionsIDs = await GetEntities(pco, teamPositions, "TeamPositions", TeamPositions, "31782683,31782685,31782687,31782881");
-				//if (teamPositionsIDs.Count == 0)
-				//{
-				//	return;
-				//}
-
-
-				var peopleOnTeam = await pco.Services.GetPeoplesByTeamID(teamIDs.First());
-				var peopleOnTeamIds = await GetEntities(pco, peopleOnTeam, "People", PeopleOnTeam);
-				//if (peopleOnTeamIds.Count == 0)
-				//{
-				//	return;
-				//}
-
-				var teamPositionsOnTeam = await pco.Services.GetTeamPositionsByTeamID(teamIDs.First());
-				var teamPositionsOnTeamIds = await GetEntity(pco, teamPositionsOnTeam, "TeamPositions", TeamPositionsOnTeam);
-				//if (peopleOnTeamIds.Count == 0)
-				//{
-				//	return;
-				//}
-
-				//https://api.planningcenteronline.com/services/v2/teams?include=person_team_position_assignments&where[name]=Live Stream
-				//https://api.planningcenteronline.com/services/v2/service_types/1235720/plans?where[id]=77741849
+				var serviceTypeId = await GetServiceType(pco, "Sunday and Other Services");
+				var planTemplateID = await GetPlanTemplate(pco, serviceTypeId, "Sunday Service");
+				var teamId = await GetTeam(pco, serviceTypeId, "Live Stream");
+				var teamPositionIds = await GetTeamPositions(pco, teamId);
+				var peopleIds = await GetPeople(pco, teamId);
 
 			}
 		}
 
-		private static async Task<string> GetEntity<R, D>(PlanningCenter pco, R results, string entityName, Dictionary<string, D> collection, string defaultChoice = null) where R : RootSingleResponeBase<D> where D : IAttribute
+		private static async Task<string> GetServiceType(PlanningCenter pco, string find)
 		{
-			string id = string.Empty;
-			collection = await GetResult<R, D>(pco, results, entityName);
+			var results = await pco.Services.GetService_types();
+			var id = string.Empty;
 
-			if (collection.Count > 1)
-			{
-				id = GetUserSelection(entityName, defaultChoice);
-				if (id == null)
-				{
-					return string.Empty;
-				}
-			}
-			else if(collection.Count == 1)
-			{
-				id = GetUserSelection(entityName, collection.First().Key);
-				if (id == null)
-				{
-					return string.Empty;
-				}
-			}
-
-			return id;
-		}
-
-		private static async Task<List<string>> GetEntities<R, D>(PlanningCenter pco, R results, string entityName, Dictionary<string, D> collection, string defaultChoice = null) where R : RootMultiResponeBase<D> where D : IAttribute
-		{
-			collection = await GetResults<R, D>(pco, results, entityName);
-
-			if (collection.Count > 1)
-			{
-				return GetUserMutliSelection(entityName, defaultChoice);
-			}
-			else
-			{
-				return GetUserMutliSelection(entityName, collection.First().Key);
-			}
-		}
-
-		static async Task<Dictionary<string, D>> GetResults<R, D>(PlanningCenter pco, R results, string enityName) where R : RootMultiResponeBase<D> where D : IAttribute
-		{
-			Dictionary<string, D> collection = new Dictionary<string, D>();
-
-			Console.WriteLine(enityName);
-			Console.WriteLine("=".PadRight(enityName.Length, '='));
+			Console.WriteLine($"ServiceTypes");
+			Console.WriteLine("=============");
 
 			do
 			{
 				foreach (var result in results.data)
 				{
-					collection.Add(result.id, result.attributes);
+					Console.WriteLine($"{result.id} {result.attributes.Name}");
+					if (result.attributes.Name == find)
+						id = result.id;
+				}
+				results = await pco.Services.GetNextRequest<ServicesResponse>(results.links);
+			} while (results != null);
+			Console.WriteLine();
+
+			return id;
+		}
+
+		private static async Task<string> GetPlanTemplate(PlanningCenter pco, string withId, string find)
+		{
+			var results = await pco.Services.GetPlan_templatesByService_typeId(withId);
+			var id = string.Empty;
+
+			Console.WriteLine($"PlanTemplates");
+			Console.WriteLine("==============");
+
+			do
+			{
+				foreach (var result in results.data)
+				{
+					Console.WriteLine($"{result.id} {result.attributes.Name}");
+					if (result.attributes.Name == find)
+						id = result.id;
+				}
+				results = await pco.Services.GetNextRequest<ServicesResponse>(results.links);
+			} while (results != null);
+			Console.WriteLine();
+
+			return id;
+		}
+
+		private static async Task<string> GetTeam(PlanningCenter pco, string withId, string find)
+		{
+			var results = await pco.Services.GetTeamsByService_typeId(withId);
+			var id = string.Empty;
+
+			Console.WriteLine($"Teams");
+			Console.WriteLine("======");
+
+			do
+			{
+				foreach (var result in results.data)
+				{
+					Console.WriteLine($"{result.id} {result.attributes.Name}");
+					if (result.attributes.Name == find)
+						id = result.id;
+				}
+				results = await pco.Services.GetNextRequest<TeamsResponse>(results.links);
+			} while (results != null);
+			Console.WriteLine();
+
+			return id;
+		}
+
+		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId)
+		{
+			var results = await pco.Services.GetTeamPositionsByTeamID(withId);
+			var id = results.data.id;
+
+			Console.WriteLine($"TeamPositions");
+			Console.WriteLine("==============");
+			Console.WriteLine($"{results.data.id} {results.data.attributes.Name}");
+
+			Console.WriteLine();
+
+			return id;
+		}
+
+		private static async Task<string> GetPeople(PlanningCenter pco, string withId)
+		{
+			var results = await pco.Services.GetPeoplesByTeamID(withId);
+			var id = string.Empty;
+
+			Console.WriteLine($"People");
+			Console.WriteLine("=======");
+
+			do
+			{
+				foreach (var result in results.data)
+				{
 					Console.WriteLine($"{result.id} {result.attributes.Name}");
 				}
-				results = await pco.Services.GetNextRequest<R>(results.links);
+				results = await pco.Services.GetNextRequest<PeoplesResponse>(results.links);
 			} while (results != null);
-
 			Console.WriteLine();
 
-			return collection;
-		}
-
-		static async Task<Dictionary<string, D>> GetResult<R, D>(PlanningCenter pco, R result, string enityName) where R : RootSingleResponeBase<D> where D : IAttribute
-		{
-			Dictionary<string, D> collection = new Dictionary<string, D>();
-
-			Console.WriteLine(enityName);
-			Console.WriteLine("=".PadRight(enityName.Length, '='));
-
-			Console.WriteLine($"{result.data.id} {result.data.attributes.Name}");
-
-			Console.WriteLine();
-
-			return collection;
-		}
-
-		static string GetUserSelection(string entityName, string defaultChoice = null)
-		{
-			if (string.IsNullOrEmpty(defaultChoice))
-			{
-				Console.WriteLine("Enter ID:");
-			}
-			else
-			{
-				Console.WriteLine($"Enter ID or default will be [{defaultChoice}]:");
-			}
-
-			var idString = Console.ReadLine();
-
-			if (string.IsNullOrEmpty(idString) && string.IsNullOrEmpty(defaultChoice))
-			{
-				Console.WriteLine($"Could not find {entityName}");
-				return string.Empty;
-			}
-			else if(string.IsNullOrEmpty(idString) && !string.IsNullOrEmpty(defaultChoice))
-			{
-				return defaultChoice;
-			}
-			else
-			{
-				Console.WriteLine();
-				return idString;
-			}
-		}
-
-		static List<string> GetUserMutliSelection(string entityName, string defaultChoice = null)
-		{
-			if (string.IsNullOrEmpty(defaultChoice))
-			{
-				Console.WriteLine("Enter IDs:");
-			}
-			else
-			{
-				Console.WriteLine($"Enter IDs or default will be [{defaultChoice}]:");
-			}
-
-			var idsString = Console.ReadLine();
-
-			if (string.IsNullOrEmpty(idsString) && string.IsNullOrEmpty(defaultChoice))
-			{
-				Console.WriteLine($"Could not find {entityName}");
-				return new List<string>();
-			}
-			else if (string.IsNullOrEmpty(idsString) && !string.IsNullOrEmpty(defaultChoice))
-			{
-				return defaultChoice.Split(',').ToList();
-			}
-			else
-			{
-				Console.WriteLine();
-				return idsString.Split(',').ToList();
-			}
+			return id;
 		}
 
 		static async Task StressTest1()
@@ -248,16 +170,6 @@ namespace PlanningCenterScheduleUploader
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
-			}
-		}
-
-		static async void TestPeople()
-		{
-			using (PlanningCenter pco = new PlanningCenter())
-			{
-				var data = await pco.People.GetPeople();
-
-				Console.WriteLine($"Data returned = {data.data.Count}");
 			}
 		}
 	}
