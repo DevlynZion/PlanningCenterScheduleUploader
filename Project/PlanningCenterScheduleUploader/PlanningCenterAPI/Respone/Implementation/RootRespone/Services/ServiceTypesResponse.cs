@@ -1,0 +1,11 @@
+﻿using PlanningCenterAPI.Respone.Core.Base;
+using PlanningCenterAPI.Respone.Implementation.Attribute;
+using PlanningCenterAPI.Respone.Implementation.Relationship;
+using PlanningCenterAPI.Respone.Implementation.TopLevel;
+
+namespace PlanningCenterAPI.Respone.Implementation.RootRespone.Services
+{
+	public class ServiceTypesResponse : RootMultiResponeBase<ServiceTypeAttribute, ServiceTypeRelationship, Links>
+	{
+	}
+}
