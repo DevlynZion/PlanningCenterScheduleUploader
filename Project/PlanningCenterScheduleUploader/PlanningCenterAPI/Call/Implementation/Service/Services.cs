@@ -43,5 +43,10 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		{
 			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}?include=team_positions");
 		}
+
+		public async Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id)
+		{
+			return await GetRequest<TeamResponse>($"/services/v2/service_types/{serviceTypesId}/team_positions/{id}");
+		}
 	}
 }

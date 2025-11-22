@@ -1,4 +1,5 @@
 ﻿using PlanningCenterAPI.Helper;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -36,24 +37,21 @@ namespace PlanningCenterAPI.Core
 
 		public async Task<T> Get<T>(string endpoint)
 		{
-			if (CaptureEndPoint)
-				File.WriteAllText("EndPoint.txt", endpoint);
+			WriteEndPoint(endpoint);
 
 			var response = await httpClient.GetAsync(endpoint);
+
+			await WrtieResponse(response);
 			response.EnsureSuccessStatusCode();
 
-			if (CaptureRespone)
-			{
-				var stringResponse = await response.Content.ReadAsStringAsync();
-				File.WriteAllText("Respone.txt", stringResponse.ToString());
-			}
-
-			var data = await response.Content.ReadFromJsonAsync<T>( new JsonSerializerOptions() { PropertyNameCaseInsensitive = false });
+			var data = await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = false });
 			return data;
 		}
 
 		public async Task Post<T>(string endpoint, T data)
 		{
+			WriteEndPoint(endpoint);
+
 			var response = await httpClient.PostAsJsonAsync<T>(endpoint, data);
 
 			response.EnsureSuccessStatusCode();
@@ -69,6 +67,21 @@ namespace PlanningCenterAPI.Core
 				}
 
 				disposedValue = true;
+			}
+		}
+
+		private void WriteEndPoint(string endpoint)
+		{
+			if (CaptureEndPoint)
+				File.WriteAllText("EndPoint.txt", BaseAddress + endpoint);
+		}
+
+		private async Task WrtieResponse(HttpResponseMessage response)
+		{
+			if (CaptureRespone)
+			{
+				var stringResponse = await response.Content.ReadAsStringAsync();
+				File.WriteAllText("Respone.txt", stringResponse.ToString());
 			}
 		}
 

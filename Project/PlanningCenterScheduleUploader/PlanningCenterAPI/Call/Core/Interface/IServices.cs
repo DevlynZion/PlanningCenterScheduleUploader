@@ -11,5 +11,7 @@ namespace PlanningCenterAPI.Call.Core.Interface
 		public Task<TeamPositionsResponse> GetTeamPositionsByService_typeId(string id);
 		public Task<PeoplesResponse> GetPeoplesByTeamID(string id);
 		public Task<TeamResponse> GetTeamPositionsByTeamID(string id);
+		public Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id);
+		//public Task GetPersonTeamPositionAssignmentByServiceTypeIdTeamPositionsId(string serviceTypesId, string id);
 	}
 }

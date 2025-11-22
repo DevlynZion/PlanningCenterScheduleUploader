@@ -31,9 +31,10 @@ namespace PlanningCenterScheduleUploader
 				var serviceTypeId = await GetServiceType(pco, "Sunday and Other Services");
 				var planTemplateID = await GetPlanTemplate(pco, serviceTypeId, "Sunday Service");
 				var teamId = await GetTeam(pco, serviceTypeId, "Live Stream");
-				var teamPositionIds = await GetTeamPositions(pco, teamId);
+				var teamPositionIds = await GetTeamPositions(pco, teamId, serviceTypeId);
 				var peopleIds = await GetPeople(pco, teamId);
 
+				await AddAssignment(pco);
 			}
 		}
 
@@ -106,14 +107,19 @@ namespace PlanningCenterScheduleUploader
 			return id;
 		}
 
-		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId)
+		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId, string serviceTypeId)
 		{
 			var results = await pco.Services.GetTeamPositionsByTeamID(withId);
 			var id = results.data.id;
 
 			Console.WriteLine($"TeamPositions");
 			Console.WriteLine("==============");
-			Console.WriteLine($"{results.data.id} {results.data.attributes.Name}");
+			foreach (var result in results.included)
+			{
+				var teamPosition = await pco.Services.GetTeamPositionByServiceTypeIdTeamPositionsId(serviceTypeId, result.id);
+
+				Console.WriteLine($"{teamPosition.data.id} {teamPosition.data.attributes.name}");
+			}
 
 			Console.WriteLine();
 
@@ -139,6 +145,16 @@ namespace PlanningCenterScheduleUploader
 			Console.WriteLine();
 
 			return id;
+		}
+
+		private static async Task AddAssignment(PlanningCenter pco)
+		{
+			// The end point to add assignement 
+			// https://developer.planning.center/docs/#/apps/services/2018-11-01/vertices/plan_person
+			// https://api.planningcenteronline.com/explorer/services/v2/people/117781542/plan_people
+
+
+
 		}
 
 		static async Task StressTest1()
