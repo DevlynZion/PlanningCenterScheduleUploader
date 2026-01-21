@@ -1,4 +1,5 @@
-﻿using PlanningCenterAPI.Type.Implementation;
+﻿using PlanningCenterAPI.Respone.Constant;
+using PlanningCenterAPI.Type.Implementation;
 
 namespace PlanningCenterAPI.Call.Core.Interface
 {
@@ -11,5 +12,7 @@ namespace PlanningCenterAPI.Call.Core.Interface
 		public Task<TeamPositionsResponse> GetTeamPositionsByService_typeId(string id);
 		public Task<PeoplesResponse> GetPeoplesByTeamID(string id);
 		public Task<TeamResponse> GetTeamPositionsByTeamID(string id);
+		public Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id);
+		public Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId);
 	}
 }

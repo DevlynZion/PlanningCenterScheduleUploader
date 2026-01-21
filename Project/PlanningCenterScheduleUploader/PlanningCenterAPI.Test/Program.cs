@@ -31,9 +31,10 @@ namespace PlanningCenterScheduleUploader
 				var serviceTypeId = await GetServiceType(pco, "Sunday and Other Services");
 				var planTemplateID = await GetPlanTemplate(pco, serviceTypeId, "Sunday Service");
 				var teamId = await GetTeam(pco, serviceTypeId, "Live Stream");
-				var teamPositionIds = await GetTeamPositions(pco, teamId);
+				var teamPositionIds = await GetTeamPositions(pco, teamId, serviceTypeId);
 				var peopleIds = await GetPeople(pco, teamId);
 
+				await AddAssignment(pco, serviceTypeId, "84546567", teamId, "Editor", peopleIds);
 			}
 		}
 
@@ -106,14 +107,19 @@ namespace PlanningCenterScheduleUploader
 			return id;
 		}
 
-		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId)
+		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId, string serviceTypeId)
 		{
 			var results = await pco.Services.GetTeamPositionsByTeamID(withId);
 			var id = results.data.id;
 
 			Console.WriteLine($"TeamPositions");
 			Console.WriteLine("==============");
-			Console.WriteLine($"{results.data.id} {results.data.attributes.Name}");
+			foreach (var result in results.included)
+			{
+				var teamPosition = await pco.Services.GetTeamPositionByServiceTypeIdTeamPositionsId(serviceTypeId, result.id);
+
+				Console.WriteLine($"{teamPosition.data.id} {teamPosition.data.attributes.name}");
+			}
 
 			Console.WriteLine();
 
@@ -123,7 +129,7 @@ namespace PlanningCenterScheduleUploader
 		private static async Task<string> GetPeople(PlanningCenter pco, string withId)
 		{
 			var results = await pco.Services.GetPeoplesByTeamID(withId);
-			var id = string.Empty;
+			var id = results.data.Where(p => p.attributes.Name == "Devlyn van der Walt").First().id;
 
 			Console.WriteLine($"People");
 			Console.WriteLine("=======");
@@ -139,6 +145,44 @@ namespace PlanningCenterScheduleUploader
 			Console.WriteLine();
 
 			return id;
+		}
+
+		private static async Task AddAssignment(PlanningCenter pco, string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
+		{
+			// The end point to add assignement 
+			/*
+				ServiceTypes
+				=============
+				1235720 Sunday and Other Services
+
+				Teams
+				======
+				5948513 Live Stream
+
+				People
+				=======
+				117781542 Devlyn van der Walt
+
+				Plan
+				=======
+				84546888 3 April 2026
+				84546567 5 April 2026
+
+				https://services.planningcenteronline.com/~api/services/v2/service_types/1235720/plans/84546567/schedule_team_members
+
+				{
+					"data":{
+						"attributes":{
+							"team_id":5948513,
+							"team_position_name":"Editor",
+							"people_ids":["117781542"]
+						}
+					}
+				}
+
+			 */
+
+			var results = await pco.Services.AddScheduleTeamMembers(serivesTypeId, planId, teamId, teamPositionName, peopleId);
 		}
 
 		static async Task StressTest1()
