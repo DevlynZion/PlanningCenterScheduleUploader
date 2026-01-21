@@ -34,7 +34,7 @@ namespace PlanningCenterScheduleUploader
 				var teamPositionIds = await GetTeamPositions(pco, teamId, serviceTypeId);
 				var peopleIds = await GetPeople(pco, teamId);
 
-				await AddAssignment(pco);
+				await AddAssignment(pco, serviceTypeId, "84546567", teamId, "Editor", peopleIds);
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace PlanningCenterScheduleUploader
 		private static async Task<string> GetPeople(PlanningCenter pco, string withId)
 		{
 			var results = await pco.Services.GetPeoplesByTeamID(withId);
-			var id = string.Empty;
+			var id = results.data.Where(p => p.attributes.Name == "Devlyn van der Walt").First().id;
 
 			Console.WriteLine($"People");
 			Console.WriteLine("=======");
@@ -147,7 +147,7 @@ namespace PlanningCenterScheduleUploader
 			return id;
 		}
 
-		private static async Task AddAssignment(PlanningCenter pco)
+		private static async Task AddAssignment(PlanningCenter pco, string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
 		{
 			// The end point to add assignement 
 			/*
@@ -168,8 +168,6 @@ namespace PlanningCenterScheduleUploader
 				84546888 3 April 2026
 				84546567 5 April 2026
 
-
-
 				https://services.planningcenteronline.com/~api/services/v2/service_types/1235720/plans/84546567/schedule_team_members
 
 				{
@@ -184,8 +182,7 @@ namespace PlanningCenterScheduleUploader
 
 			 */
 
-
-
+			var results = await pco.Services.AddScheduleTeamMembers(serivesTypeId, planId, teamId, teamPositionName, peopleId);
 		}
 
 		static async Task StressTest1()

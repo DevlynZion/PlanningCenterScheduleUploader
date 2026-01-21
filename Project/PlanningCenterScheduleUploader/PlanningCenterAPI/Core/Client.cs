@@ -48,13 +48,17 @@ namespace PlanningCenterAPI.Core
 			return data;
 		}
 
-		public async Task Post<T>(string endpoint, T data)
+		public async Task<T> Post<T, C>(string endpoint, C content)
 		{
 			WriteEndPoint(endpoint);
 
-			var response = await httpClient.PostAsJsonAsync<T>(endpoint, data);
+			var response = await httpClient.PostAsJsonAsync(endpoint, content);
 
+			await WrtieResponse(response);
 			response.EnsureSuccessStatusCode();
+
+			var data = await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = false });
+			return data;
 		}
 
 		protected virtual void Dispose(bool disposing)

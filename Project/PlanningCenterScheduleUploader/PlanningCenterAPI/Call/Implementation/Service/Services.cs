@@ -1,6 +1,8 @@
 ﻿using PlanningCenterAPI.Call.Core.Base;
 using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Core;
+using PlanningCenterAPI.Request.Constant;
+using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterAPI.Type.Implementation;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
@@ -47,6 +49,16 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		public async Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id)
 		{
 			return await GetRequest<TeamResponse>($"/services/v2/service_types/{serviceTypesId}/team_positions/{id}");
+		}
+
+		public async Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
+		{
+			var content = new AddScheduleTeamMembersRequest.Rootobject();
+			content.data.attributes.team_id = Convert.ToInt32(teamId);
+			content.data.attributes.team_position_name = teamPositionName;
+			content.data.attributes.people_ids = new string[] { peopleId };
+
+			return await PostRequest<AddScheduleTeamMembersResponse.Rootobject, AddScheduleTeamMembersRequest.Rootobject>($"/~api/services/v2/service_types/{serivesTypeId}/plans/{planId}/schedule_team_members", content);
 		}
 	}
 }

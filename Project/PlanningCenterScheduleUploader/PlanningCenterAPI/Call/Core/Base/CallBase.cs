@@ -30,5 +30,12 @@ namespace PlanningCenterAPI.Call.Core.Base
 
 			return await rateLimiter.EnqueueAsync(request);
 		}
+
+		protected async Task<T> PostRequest<T, C>(string endpoint, C content)
+		{
+			var request = new PostRequest<T, C>(endpoint, content);
+
+			return await rateLimiter.EnqueueAsync(request);
+		}
 	}
 }
