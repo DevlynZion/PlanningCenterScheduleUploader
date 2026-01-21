@@ -150,8 +150,39 @@ namespace PlanningCenterScheduleUploader
 		private static async Task AddAssignment(PlanningCenter pco)
 		{
 			// The end point to add assignement 
-			// https://developer.planning.center/docs/#/apps/services/2018-11-01/vertices/plan_person
-			// https://api.planningcenteronline.com/explorer/services/v2/people/117781542/plan_people
+			/*
+				ServiceTypes
+				=============
+				1235720 Sunday and Other Services
+
+				Teams
+				======
+				5948513 Live Stream
+
+				People
+				=======
+				117781542 Devlyn van der Walt
+
+				Plan
+				=======
+				84546888 3 April 2026
+				84546567 5 April 2026
+
+
+
+				https://services.planningcenteronline.com/~api/services/v2/service_types/1235720/plans/84546567/schedule_team_members
+
+				{
+					"data":{
+						"attributes":{
+							"team_id":5948513,
+							"team_position_name":"Editor",
+							"people_ids":["117781542"]
+						}
+					}
+				}
+
+			 */
 
 
 
