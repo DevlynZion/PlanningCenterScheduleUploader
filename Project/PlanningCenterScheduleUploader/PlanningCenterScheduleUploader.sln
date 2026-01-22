@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterAPI.Test", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningCenterScheduleUploader", "PlanningCenterScheduleUploader\PlanningCenterScheduleUploader.csproj", "{B69E436A-4BD5-4153-9691-1E3CA303165D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessSourceFile", "ProcessSourceFile\ProcessSourceFile.csproj", "{F27BCA81-FA24-46B0-80F2-2BA075CDD21E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B69E436A-4BD5-4153-9691-1E3CA303165D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B69E436A-4BD5-4153-9691-1E3CA303165D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B69E436A-4BD5-4153-9691-1E3CA303165D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F27BCA81-FA24-46B0-80F2-2BA075CDD21E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F27BCA81-FA24-46B0-80F2-2BA075CDD21E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F27BCA81-FA24-46B0-80F2-2BA075CDD21E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F27BCA81-FA24-46B0-80F2-2BA075CDD21E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

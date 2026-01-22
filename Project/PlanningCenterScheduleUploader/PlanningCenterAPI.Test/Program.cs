@@ -1,5 +1,6 @@
 ﻿using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
+using ProcessSourceFile;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -11,7 +12,10 @@ namespace PlanningCenterScheduleUploader
 
 		static void Main(string[] args)
 		{
-			TestQueryNeededPosition().Wait();
+			TestCode test = new TestCode();
+			test.Run().Wait();
+
+			//TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
 
 			Console.WriteLine($"Program Done");

@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PlanningCenterAPI\PlanningCenterAPI.csproj" />
+    <ProjectReference Include="..\ProcessSourceFile\ProcessSourceFile.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Schedule.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
