@@ -5,13 +5,11 @@ namespace PlanningCenterAPI.Call.Core.Interface
 {
 	public interface IServices : ICall
 	{
-		public Task<ServicesResponse> GetService_types();
-		public Task<ServicesResponse> GetPlan_templatesByService_typeId(string id);
-		public Task<TeamsResponse> GetTeamsByService_typeId(string id);
-		public Task<TeamResponse> GetTeamsById(string id);
-		public Task<TeamPositionsResponse> GetTeamPositionsByService_typeId(string id);
-		public Task<PeoplesResponse> GetPeoplesByTeamID(string id);
-		public Task<TeamResponse> GetTeamPositionsByTeamID(string id);
+		public Task<ServicesResponse> GetServiceTypes();
+		public Task<ServicesResponse> GetPlanTemplates(string serviceTypeId);
+		public Task<TeamsResponse> GetTeams(string serviceTypeId);
+		public Task<PeoplesResponse> GetPeoplesByTeamId(string teamId);
+		public Task<TeamResponse> GetTeamPositionsByTeamID(string teamId);
 		public Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id);
 		public Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId);
 	}

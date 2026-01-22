@@ -40,7 +40,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetServiceType(PlanningCenter pco, string find)
 		{
-			var results = await pco.Services.GetService_types();
+			var results = await pco.Services.GetServiceTypes();
 			var id = string.Empty;
 
 			Console.WriteLine($"ServiceTypes");
@@ -63,7 +63,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetPlanTemplate(PlanningCenter pco, string withId, string find)
 		{
-			var results = await pco.Services.GetPlan_templatesByService_typeId(withId);
+			var results = await pco.Services.GetPlanTemplates(withId);
 			var id = string.Empty;
 
 			Console.WriteLine($"PlanTemplates");
@@ -86,7 +86,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetTeam(PlanningCenter pco, string withId, string find)
 		{
-			var results = await pco.Services.GetTeamsByService_typeId(withId);
+			var results = await pco.Services.GetTeams(withId);
 			var id = string.Empty;
 
 			Console.WriteLine($"Teams");
@@ -128,7 +128,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetPeople(PlanningCenter pco, string withId)
 		{
-			var results = await pco.Services.GetPeoplesByTeamID(withId);
+			var results = await pco.Services.GetPeoplesByTeamId(withId);
 			var id = results.data.Where(p => p.attributes.Name == "Devlyn van der Walt").First().id;
 
 			Console.WriteLine($"People");
@@ -149,40 +149,9 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task AddAssignment(PlanningCenter pco, string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
 		{
-			// The end point to add assignement 
-			/*
-				ServiceTypes
-				=============
-				1235720 Sunday and Other Services
-
-				Teams
-				======
-				5948513 Live Stream
-
-				People
-				=======
-				117781542 Devlyn van der Walt
-
-				Plan
-				=======
-				84546888 3 April 2026
-				84546567 5 April 2026
-
-				https://services.planningcenteronline.com/~api/services/v2/service_types/1235720/plans/84546567/schedule_team_members
-
-				{
-					"data":{
-						"attributes":{
-							"team_id":5948513,
-							"team_position_name":"Editor",
-							"people_ids":["117781542"]
-						}
-					}
-				}
-
-			 */
-
 			var results = await pco.Services.AddScheduleTeamMembers(serivesTypeId, planId, teamId, teamPositionName, peopleId);
+
+			Console.WriteLine($"AddAssignment!");
 		}
 
 		static async Task StressTest1()

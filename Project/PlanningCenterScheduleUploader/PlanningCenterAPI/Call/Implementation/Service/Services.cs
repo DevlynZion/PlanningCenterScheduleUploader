@@ -11,44 +11,34 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 	{
 		internal Services(RateLimiter rateLimiter) : base(rateLimiter) {}
 
-		public async Task<ServicesResponse> GetService_types()
+		public async Task<ServicesResponse> GetServiceTypes()
 		{
 			return await GetRequest<ServicesResponse>("/services/v2/service_types");
 		}
 
-		public async Task<ServicesResponse> GetPlan_templatesByService_typeId(string id)
+		public async Task<ServicesResponse> GetPlanTemplates(string serviceTypeId)
 		{
-			return await GetRequest<ServicesResponse>($"/services/v2/service_types/{id}/plan_templates");
+			return await GetRequest<ServicesResponse>($"/services/v2/service_types/{serviceTypeId}/plan_templates");
 		}
 
-		public async Task<TeamsResponse> GetTeamsByService_typeId(string id)
+		public async Task<TeamsResponse> GetTeams(string serviceTypeId)
 		{
-			return await GetRequest<TeamsResponse>($"/services/v2/service_types/{id}/teams");
+			return await GetRequest<TeamsResponse>($"/services/v2/service_types/{serviceTypeId}/teams");
 		}
 
-		public async Task<TeamResponse> GetTeamsById(string id)
+		public async Task<PeoplesResponse> GetPeoplesByTeamId(string teamId)
 		{
-			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}");
+			return await GetRequest<PeoplesResponse>($"/services/v2/teams/{teamId}/people");
 		}
 
-		public async Task<TeamPositionsResponse> GetTeamPositionsByService_typeId(string id)
+		public async Task<TeamResponse> GetTeamPositionsByTeamID(string teamId)
 		{
-			return await GetRequest<TeamPositionsResponse>($"/services/v2/service_types/{id}/team_positions");
+			return await GetRequest<TeamResponse>($"/services/v2/teams/{teamId}?include=team_positions");
 		}
 
-		public async Task<PeoplesResponse> GetPeoplesByTeamID(string id)
+		public async Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string teamPositionId)
 		{
-			return await GetRequest<PeoplesResponse>($"/services/v2/teams/{id}/people");
-		}
-
-		public async Task<TeamResponse> GetTeamPositionsByTeamID(string id)
-		{
-			return await GetRequest<TeamResponse>($"/services/v2/teams/{id}?include=team_positions");
-		}
-
-		public async Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id)
-		{
-			return await GetRequest<TeamResponse>($"/services/v2/service_types/{serviceTypesId}/team_positions/{id}");
+			return await GetRequest<TeamResponse>($"/services/v2/service_types/{serviceTypesId}/team_positions/{teamPositionId}");
 		}
 
 		public async Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
