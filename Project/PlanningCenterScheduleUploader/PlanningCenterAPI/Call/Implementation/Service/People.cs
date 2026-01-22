@@ -1,7 +1,7 @@
 ﻿using PlanningCenterAPI.Call.Core.Base;
 using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Core;
-using PlanningCenterAPI.Type.Implementation;
+using PlanningCenterAPI.Respone.Constant;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
@@ -9,9 +9,9 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 	{
 		internal People(RateLimiter rateLimiter) : base(rateLimiter) { }
 
-		public async Task<PeoplesResponse> GetPeople()
+		public async Task<GetPeopleResponese.Rootobject> GetPeople()
 		{
-			return await GetRequest<PeoplesResponse>("/services/v2/people");
+			return await GetRequest<GetPeopleResponese.Rootobject>("/services/v2/people");
 		}
 	}
 }

@@ -1,11 +1,5 @@
 ﻿using PlanningCenterAPI;
-using PlanningCenterAPI.Helper;
-using PlanningCenterAPI.Type;
-using PlanningCenterAPI.Type.Core.Interface;
-using PlanningCenterAPI.Type.Implementation;
-using PlanningCenterAPI.Type.Implementation.Attribute;
-using System.Net.Http.Json;
-using System.Text;
+using PlanningCenterAPI.Respone.Constant;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -40,7 +34,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetServiceType(PlanningCenter pco, string find)
 		{
-			var results = await pco.Services.GetService_types();
+			var results = await pco.Services.GetServiceTypes();
 			var id = string.Empty;
 
 			Console.WriteLine($"ServiceTypes");
@@ -50,11 +44,11 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
-					if (result.attributes.Name == find)
+					Console.WriteLine($"{result.id} {result.attributes.name}");
+					if (result.attributes.name == find)
 						id = result.id;
 				}
-				results = await pco.Services.GetNextRequest<ServicesResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetServiceTypesResponse.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -63,7 +57,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetPlanTemplate(PlanningCenter pco, string withId, string find)
 		{
-			var results = await pco.Services.GetPlan_templatesByService_typeId(withId);
+			var results = await pco.Services.GetPlanTemplates(withId);
 			var id = string.Empty;
 
 			Console.WriteLine($"PlanTemplates");
@@ -73,11 +67,11 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
-					if (result.attributes.Name == find)
+					Console.WriteLine($"{result.id} {result.attributes.name}");
+					if (result.attributes.name == find)
 						id = result.id;
 				}
-				results = await pco.Services.GetNextRequest<ServicesResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetPlanTemplatesRespone.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -86,7 +80,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetTeam(PlanningCenter pco, string withId, string find)
 		{
-			var results = await pco.Services.GetTeamsByService_typeId(withId);
+			var results = await pco.Services.GetTeams(withId);
 			var id = string.Empty;
 
 			Console.WriteLine($"Teams");
@@ -96,11 +90,11 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
-					if (result.attributes.Name == find)
+					Console.WriteLine($"{result.id} {result.attributes.name}");
+					if (result.attributes.name == find)
 						id = result.id;
 				}
-				results = await pco.Services.GetNextRequest<TeamsResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetTeamsResponse.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -109,7 +103,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId, string serviceTypeId)
 		{
-			var results = await pco.Services.GetTeamPositionsByTeamID(withId);
+			var results = await pco.Services.GetTeamPositionsByTeamId(withId);
 			var id = results.data.id;
 
 			Console.WriteLine($"TeamPositions");
@@ -128,8 +122,8 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetPeople(PlanningCenter pco, string withId)
 		{
-			var results = await pco.Services.GetPeoplesByTeamID(withId);
-			var id = results.data.Where(p => p.attributes.Name == "Devlyn van der Walt").First().id;
+			var results = await pco.Services.GetPeoplesByTeamId(withId);
+			var id = results.data.Where(p => p.attributes.full_name == "Devlyn van der Walt").First().id;
 
 			Console.WriteLine($"People");
 			Console.WriteLine("=======");
@@ -138,9 +132,9 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
+					Console.WriteLine($"{result.id} {result.attributes.full_name}");
 				}
-				results = await pco.Services.GetNextRequest<PeoplesResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetPeoplesByTeamIdRespone.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -149,40 +143,9 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task AddAssignment(PlanningCenter pco, string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
 		{
-			// The end point to add assignement 
-			/*
-				ServiceTypes
-				=============
-				1235720 Sunday and Other Services
-
-				Teams
-				======
-				5948513 Live Stream
-
-				People
-				=======
-				117781542 Devlyn van der Walt
-
-				Plan
-				=======
-				84546888 3 April 2026
-				84546567 5 April 2026
-
-				https://services.planningcenteronline.com/~api/services/v2/service_types/1235720/plans/84546567/schedule_team_members
-
-				{
-					"data":{
-						"attributes":{
-							"team_id":5948513,
-							"team_position_name":"Editor",
-							"people_ids":["117781542"]
-						}
-					}
-				}
-
-			 */
-
 			var results = await pco.Services.AddScheduleTeamMembers(serivesTypeId, planId, teamId, teamPositionName, peopleId);
+
+			Console.WriteLine($"AddAssignment!");
 		}
 
 		static async Task StressTest1()
@@ -205,7 +168,7 @@ namespace PlanningCenterScheduleUploader
 			try
 			{
 				var data = await pco.People.GetPeople();
-				Console.WriteLine($"{k} Data returned = {data.data.Count}");
+				Console.WriteLine($"{k} Data returned = {data.data.Count()}");
 			}
 			catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
 			{

@@ -1,6 +1,4 @@
-﻿using PlanningCenterAPI.Type;
-
-namespace PlanningCenterAPI.Core.Interface
+﻿namespace PlanningCenterAPI.Core.Interface
 {
 	internal interface IRequest
 	{
