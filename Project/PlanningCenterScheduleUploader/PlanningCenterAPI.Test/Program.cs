@@ -1,11 +1,5 @@
 ﻿using PlanningCenterAPI;
-using PlanningCenterAPI.Helper;
-using PlanningCenterAPI.Type;
-using PlanningCenterAPI.Type.Core.Interface;
-using PlanningCenterAPI.Type.Implementation;
-using PlanningCenterAPI.Type.Implementation.Attribute;
-using System.Net.Http.Json;
-using System.Text;
+using PlanningCenterAPI.Respone.Constant;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -50,11 +44,11 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
-					if (result.attributes.Name == find)
+					Console.WriteLine($"{result.id} {result.attributes.name}");
+					if (result.attributes.name == find)
 						id = result.id;
 				}
-				results = await pco.Services.GetNextRequest<ServicesResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetServiceTypesResponse.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -73,11 +67,11 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
-					if (result.attributes.Name == find)
+					Console.WriteLine($"{result.id} {result.attributes.name}");
+					if (result.attributes.name == find)
 						id = result.id;
 				}
-				results = await pco.Services.GetNextRequest<ServicesResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetPlanTemplatesRespone.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -96,11 +90,11 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
-					if (result.attributes.Name == find)
+					Console.WriteLine($"{result.id} {result.attributes.name}");
+					if (result.attributes.name == find)
 						id = result.id;
 				}
-				results = await pco.Services.GetNextRequest<TeamsResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetTeamsResponse.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -109,7 +103,7 @@ namespace PlanningCenterScheduleUploader
 
 		private static async Task<string> GetTeamPositions(PlanningCenter pco, string withId, string serviceTypeId)
 		{
-			var results = await pco.Services.GetTeamPositionsByTeamID(withId);
+			var results = await pco.Services.GetTeamPositionsByTeamId(withId);
 			var id = results.data.id;
 
 			Console.WriteLine($"TeamPositions");
@@ -129,7 +123,7 @@ namespace PlanningCenterScheduleUploader
 		private static async Task<string> GetPeople(PlanningCenter pco, string withId)
 		{
 			var results = await pco.Services.GetPeoplesByTeamId(withId);
-			var id = results.data.Where(p => p.attributes.Name == "Devlyn van der Walt").First().id;
+			var id = results.data.Where(p => p.attributes.full_name == "Devlyn van der Walt").First().id;
 
 			Console.WriteLine($"People");
 			Console.WriteLine("=======");
@@ -138,9 +132,9 @@ namespace PlanningCenterScheduleUploader
 			{
 				foreach (var result in results.data)
 				{
-					Console.WriteLine($"{result.id} {result.attributes.Name}");
+					Console.WriteLine($"{result.id} {result.attributes.full_name}");
 				}
-				results = await pco.Services.GetNextRequest<PeoplesResponse>(results.links);
+				results = await pco.Services.GetNextRequest<GetPeoplesByTeamIdRespone.Rootobject>(results.links);
 			} while (results != null);
 			Console.WriteLine();
 
@@ -174,7 +168,7 @@ namespace PlanningCenterScheduleUploader
 			try
 			{
 				var data = await pco.People.GetPeople();
-				Console.WriteLine($"{k} Data returned = {data.data.Count}");
+				Console.WriteLine($"{k} Data returned = {data.data.Count()}");
 			}
 			catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
 			{

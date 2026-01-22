@@ -1,6 +1,8 @@
-﻿namespace PlanningCenterAPI.Respone.Examples
+﻿using PlanningCenterAPI.Respone.Interface;
+
+namespace PlanningCenterAPI.Respone.Constant
 {
-	public class GetTeam
+	public class GetPlanTemplatesRespone
 	{
 		public class Rootobject
 		{
@@ -10,9 +12,10 @@
 			public Meta meta { get; set; }
 		}
 
-		public class Links
+		public class Links : ILink
 		{
 			public string self { get; set; }
+			public string next { get; set; }
 		}
 
 		public class Meta
@@ -20,8 +23,6 @@
 			public int total_count { get; set; }
 			public int count { get; set; }
 			public string[] can_order_by { get; set; }
-			public string[] can_query_by { get; set; }
-			public string[] can_include { get; set; }
 			public Parent parent { get; set; }
 		}
 
@@ -42,28 +43,23 @@
 
 		public class Attributes
 		{
-			public object archived_at { get; set; }
-			public bool assigned_directly { get; set; }
+			public bool can_view_order { get; set; }
 			public DateTime created_at { get; set; }
-			public bool default_prepare_notifications { get; set; }
-			public string default_status { get; set; }
-			public string last_plan_from { get; set; }
+			public int item_count { get; set; }
+			public bool multi_day { get; set; }
 			public string name { get; set; }
-			public bool rehearsal_team { get; set; }
-			public string schedule_to { get; set; }
-			public bool secure_team { get; set; }
-			public int? sequence { get; set; }
-			public string stage_color { get; set; }
-			public string stage_variant { get; set; }
+			public int note_count { get; set; }
+			public bool prefers_order_view { get; set; }
+			public bool rehearsable { get; set; }
+			public int team_count { get; set; }
 			public DateTime updated_at { get; set; }
-			public int viewers_see { get; set; }
 		}
 
 		public class Relationships
 		{
 			public Service_Type service_type { get; set; }
-			public Default_Responds_To default_responds_to { get; set; }
-			public Service_Types service_types { get; set; }
+			public Created_By created_by { get; set; }
+			public Updated_By updated_by { get; set; }
 		}
 
 		public class Service_Type
@@ -77,7 +73,7 @@
 			public string id { get; set; }
 		}
 
-		public class Default_Responds_To
+		public class Created_By
 		{
 			public Data1 data { get; set; }
 		}
@@ -88,12 +84,12 @@
 			public string id { get; set; }
 		}
 
-		public class Service_Types
+		public class Updated_By
 		{
-			public Datum1[] data { get; set; }
+			public Data2 data { get; set; }
 		}
 
-		public class Datum1
+		public class Data2
 		{
 			public string type { get; set; }
 			public string id { get; set; }

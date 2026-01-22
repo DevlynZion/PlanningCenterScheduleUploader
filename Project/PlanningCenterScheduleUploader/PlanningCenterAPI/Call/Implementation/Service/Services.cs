@@ -3,7 +3,6 @@ using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Core;
 using PlanningCenterAPI.Request.Constant;
 using PlanningCenterAPI.Respone.Constant;
-using PlanningCenterAPI.Type.Implementation;
 
 namespace PlanningCenterAPI.Call.Implementation.Service
 {
@@ -11,34 +10,34 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 	{
 		internal Services(RateLimiter rateLimiter) : base(rateLimiter) {}
 
-		public async Task<ServicesResponse> GetServiceTypes()
+		public async Task<GetServiceTypesResponse.Rootobject> GetServiceTypes()
 		{
-			return await GetRequest<ServicesResponse>("/services/v2/service_types");
+			return await GetRequest<GetServiceTypesResponse.Rootobject>("/services/v2/service_types");
 		}
 
-		public async Task<ServicesResponse> GetPlanTemplates(string serviceTypeId)
+		public async Task<GetPlanTemplatesRespone.Rootobject> GetPlanTemplates(string serviceTypeId)
 		{
-			return await GetRequest<ServicesResponse>($"/services/v2/service_types/{serviceTypeId}/plan_templates");
+			return await GetRequest<GetPlanTemplatesRespone.Rootobject>($"/services/v2/service_types/{serviceTypeId}/plan_templates");
 		}
 
-		public async Task<TeamsResponse> GetTeams(string serviceTypeId)
+		public async Task<GetTeamsResponse.Rootobject> GetTeams(string serviceTypeId)
 		{
-			return await GetRequest<TeamsResponse>($"/services/v2/service_types/{serviceTypeId}/teams");
+			return await GetRequest<GetTeamsResponse.Rootobject>($"/services/v2/service_types/{serviceTypeId}/teams");
 		}
 
-		public async Task<PeoplesResponse> GetPeoplesByTeamId(string teamId)
+		public async Task<GetPeoplesByTeamIdRespone.Rootobject> GetPeoplesByTeamId(string teamId)
 		{
-			return await GetRequest<PeoplesResponse>($"/services/v2/teams/{teamId}/people");
+			return await GetRequest<GetPeoplesByTeamIdRespone.Rootobject>($"/services/v2/teams/{teamId}/people");
 		}
 
-		public async Task<TeamResponse> GetTeamPositionsByTeamID(string teamId)
+		public async Task<GetTeamPositionsByTeamIdRespone.Rootobject> GetTeamPositionsByTeamId(string teamId)
 		{
-			return await GetRequest<TeamResponse>($"/services/v2/teams/{teamId}?include=team_positions");
+			return await GetRequest<GetTeamPositionsByTeamIdRespone.Rootobject>($"/services/v2/teams/{teamId}?include=team_positions");
 		}
 
-		public async Task<TeamResponse> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string teamPositionId)
+		public async Task<GetTeamPositionByServiceTypeIdTeamPositionsIdRespone.Rootobject> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string teamPositionId)
 		{
-			return await GetRequest<TeamResponse>($"/services/v2/service_types/{serviceTypesId}/team_positions/{teamPositionId}");
+			return await GetRequest<GetTeamPositionByServiceTypeIdTeamPositionsIdRespone.Rootobject>($"/services/v2/service_types/{serviceTypesId}/team_positions/{teamPositionId}");
 		}
 
 		public async Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)

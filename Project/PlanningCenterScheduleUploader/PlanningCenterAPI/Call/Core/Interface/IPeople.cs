@@ -1,9 +1,9 @@
-﻿using PlanningCenterAPI.Type.Implementation;
+﻿using PlanningCenterAPI.Respone.Constant;
 
 namespace PlanningCenterAPI.Call.Core.Interface
 {
 	public interface IPeople : ICall
 	{
-		public Task<PeoplesResponse> GetPeople();
+		public Task<GetPeopleResponese.Rootobject> GetPeople();
 	}
 }

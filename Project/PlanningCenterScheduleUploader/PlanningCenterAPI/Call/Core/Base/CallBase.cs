@@ -1,9 +1,7 @@
 ﻿using PlanningCenterAPI.Call.Core.Interface;
 using PlanningCenterAPI.Call.Implementation.Request;
 using PlanningCenterAPI.Core;
-using PlanningCenterAPI.Core.Interface;
-using PlanningCenterAPI.Type;
-using PlanningCenterAPI.Type.TopLevel;
+using PlanningCenterAPI.Respone.Interface;
 
 namespace PlanningCenterAPI.Call.Core.Base
 {
@@ -16,7 +14,7 @@ namespace PlanningCenterAPI.Call.Core.Base
 			this.rateLimiter = rateLimiter;
 		}
 
-		public async Task<T> GetNextRequest<T>(Links link) where T : class
+		public async Task<T> GetNextRequest<T>(ILink link) where T : class
 		{
 			if (string.IsNullOrEmpty(link.next))
 				return null;

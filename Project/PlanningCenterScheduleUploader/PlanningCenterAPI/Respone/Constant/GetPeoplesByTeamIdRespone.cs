@@ -1,7 +1,8 @@
-﻿
-namespace PlanningCenterAPI.Respone.Examples
+﻿using PlanningCenterAPI.Respone.Interface;
+
+namespace PlanningCenterAPI.Respone.Constant
 {
-	public class GetPeople
+	public class GetPeoplesByTeamIdRespone
 	{
 		public class Rootobject
 		{
@@ -11,9 +12,10 @@ namespace PlanningCenterAPI.Respone.Examples
 			public Meta meta { get; set; }
 		}
 
-		public class Links
+		public class Links : ILink
 		{
 			public string self { get; set; }
+			public string next { get; set; }
 		}
 
 		public class Meta
@@ -135,6 +137,6 @@ namespace PlanningCenterAPI.Respone.Examples
 			public string self { get; set; }
 			public string html { get; set; }
 		}
-	}
 
+	}
 }
