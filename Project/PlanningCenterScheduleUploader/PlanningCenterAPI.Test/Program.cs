@@ -1,6 +1,6 @@
 ﻿using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
-using ProcessSourceFile;
+using PlanningCenterScheduleUploaderLib.Process.Implementation;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -12,14 +12,19 @@ namespace PlanningCenterScheduleUploader
 
 		static void Main(string[] args)
 		{
-			TestCode test = new TestCode();
-			test.Run().Wait();
+			TestExcelProcessor();
 
 			//TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
 
 			Console.WriteLine($"Program Done");
 			Console.ReadKey();
+		}
+
+		static void TestExcelProcessor()
+		{
+			ExcelProcessor excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
+			var model = excelProcessor.CreateScheduleModel();
 		}
 
 		static async Task TestQueryNeededPosition()

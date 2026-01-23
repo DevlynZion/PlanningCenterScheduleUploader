@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PlanningCenterAPI\PlanningCenterAPI.csproj" />
-    <ProjectReference Include="..\ProcessSourceFile\ProcessSourceFile.csproj" />
+    <ProjectReference Include="..\PlanningCenterScheduleUploaderLib\PlanningCenterScheduleUploaderLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
