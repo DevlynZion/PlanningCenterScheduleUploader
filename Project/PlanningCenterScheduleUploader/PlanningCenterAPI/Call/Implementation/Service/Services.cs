@@ -40,14 +40,24 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 			return await GetRequest<GetTeamPositionByServiceTypeIdTeamPositionsIdRespone.Rootobject>($"/services/v2/service_types/{serviceTypesId}/team_positions/{teamPositionId}");
 		}
 
-		public async Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
+		public async Task<AddScheduleTeamMembersSpecialResponse.Rootobject> AddScheduleTeamMembersSpecial(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
 		{
-			var content = new AddScheduleTeamMembersRequest.Rootobject();
+			var content = new AddScheduleTeamMembersSpecialRequest.Rootobject();
 			content.data.attributes.team_id = Convert.ToInt32(teamId);
 			content.data.attributes.team_position_name = teamPositionName;
 			content.data.attributes.people_ids = new string[] { peopleId };
 
-			return await PostRequest<AddScheduleTeamMembersResponse.Rootobject, AddScheduleTeamMembersRequest.Rootobject>($"/~api/services/v2/service_types/{serivesTypeId}/plans/{planId}/schedule_team_members", content);
+			return await PostRequest<AddScheduleTeamMembersSpecialResponse.Rootobject, AddScheduleTeamMembersSpecialRequest.Rootobject>($"/~api/services/v2/service_types/{serivesTypeId}/plans/{planId}/schedule_team_members", content);
+		}
+		public async Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId)
+		{
+			// TODO: Possible to to multiple 
+			var content = new AddScheduleTeamMembersRequest.Rootobject();
+			content.data.attributes.person_id = peopleId;
+			content.data.attributes.team_id = teamId;
+			content.data.attributes.team_position_name = teamPositionName;
+
+			return await PostRequest<AddScheduleTeamMembersResponse.Rootobject, AddScheduleTeamMembersRequest.Rootobject>($"/services/v2/service_types/{serivesTypeId}/plans/{planId}/team_members", content);
 		}
 	}
 }

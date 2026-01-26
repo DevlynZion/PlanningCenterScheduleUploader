@@ -10,6 +10,7 @@ namespace PlanningCenterAPI.Call.Core.Interface
 		public Task<GetPeoplesByTeamIdRespone.Rootobject> GetPeoplesByTeamId(string teamId);
 		public Task<GetTeamPositionsByTeamIdRespone.Rootobject> GetTeamPositionsByTeamId(string teamId);
 		public Task<GetTeamPositionByServiceTypeIdTeamPositionsIdRespone.Rootobject> GetTeamPositionByServiceTypeIdTeamPositionsId(string serviceTypesId, string id);
+		public Task<AddScheduleTeamMembersSpecialResponse.Rootobject> AddScheduleTeamMembersSpecial(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId);
 		public Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId);
 	}
 }

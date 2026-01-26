@@ -1,12 +1,12 @@
 ﻿namespace PlanningCenterAPI.Request.Constant
 {
-	public class AddScheduleTeamMembersRequest
+	public class AddScheduleTeamMembersSpecialRequest
 	{
 		public class Rootobject
 		{
 			public Data data { get; set; }
 
-			public Rootobject()
+			public Rootobject() 
 			{
 				data = new Data();
 			}
@@ -14,21 +14,18 @@
 
 		public class Data
 		{
-			public string type { get; set; }
 			public Attributes attributes { get; set; }
-
 			public Data()
 			{
-				type = "PlanPerson";
 				attributes = new Attributes();
 			}
 		}
 
 		public class Attributes
 		{
-			public string person_id { get; set; }
-			public string team_id { get; set; }
+			public int team_id { get; set; }
 			public string team_position_name { get; set; }
+			public string[] people_ids { get; set; }
 		}
 
 	}
