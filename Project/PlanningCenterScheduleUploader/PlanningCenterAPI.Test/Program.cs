@@ -12,9 +12,9 @@ namespace PlanningCenterScheduleUploader
 
 		static void Main(string[] args)
 		{
-			//TestExcelProcessor();
+			TestExcelProcessor();
 
-			TestQueryNeededPosition().Wait();
+			//TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
 
 			Console.WriteLine($"Program Done");

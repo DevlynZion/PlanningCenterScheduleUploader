@@ -56,7 +56,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			IScheduleAssignmentsModel scheduleAssignmentsModel = new ScheduleAssignmentsModel();
 
 			var isFirstRow = true;
-
+			var dateColumnName = string.Empty;
 			foreach (DataRow assignRow in schedule.Rows)
 			{
 				if (isFirstRow)
@@ -67,31 +67,32 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 						var roleName = assignRow[role] as string;
 
 						if (roleName.ToLowerInvariant() == DateColumnName)
+						{
+							dateColumnName = role.ColumnName;
 							continue;
+						}
 
 						scheduleAssignmentsModel.AddRole(roleName);
 					}
 				}
 				else
 				{
-					var date = string.Empty;
+					var date = DateTime.Now;
 					var persons = new List<string>();
 
 					foreach (DataColumn role in schedule.Columns)
 					{
-						var value = assignRow[role] as string;
-
-						if (value.ToLowerInvariant() == DateColumnName)
+						if (role.ColumnName == dateColumnName)
 						{
-							date = value;
+							date = assignRow.Field<DateTime>(role);
 						}
 						else
 						{
-							persons.Add(value);
+							persons.Add(assignRow[role] as string);
 						}
 					}
 
-					scheduleAssignmentsModel.AddAssignment(date, persons);
+					scheduleAssignmentsModel.AddAssignment(date.ToString(), persons);
 				}
 			}
 
