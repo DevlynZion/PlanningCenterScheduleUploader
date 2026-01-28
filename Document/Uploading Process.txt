@@ -1,0 +1,15 @@
+Planning Centre Uploader Processes
+==================================
+
+1. Input Excel with scheduling data.
+2. Do Checks on Data with Planning Centre.
+ 2.1 Does Service Type exist on Planning Centre.
+ 2.2 Does Plans exist on Planning Centre.
+ 2.3 Does Team exist on Planning Centre.
+ 2.4 Does Roles exist on Planning Centre.
+ 2.5 Does the people exist on Planning Centre.
+ 2.6 Does the people exist in their assign roles on Planning Centre (Not sure if needed).
+3. Clear Plans for team on Planning Centre.
+4. Check if person is not assigned already on another team.
+5. Mark in excel file all errors.
+6. Submit assignments on Planning Centre.
