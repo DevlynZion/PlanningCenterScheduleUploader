@@ -1,6 +1,7 @@
 ﻿using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterScheduleUploaderLib.Process.Implementation;
+using PlanningCenterScheduleUploaderLib.Scheduler.Implementation;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -12,7 +13,7 @@ namespace PlanningCenterScheduleUploader
 
 		static void Main(string[] args)
 		{
-			TestExcelProcessor();
+			TestExcelProcessor().Wait();
 
 			//TestQueryNeededPosition().Wait();
 			//StressTest1().Wait();
@@ -21,10 +22,12 @@ namespace PlanningCenterScheduleUploader
 			Console.ReadKey();
 		}
 
-		static void TestExcelProcessor()
+		static async Task TestExcelProcessor()
 		{
-			ExcelProcessor excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
+			var excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
 			var model = excelProcessor.CreateScheduleModel();
+			var planningCenterScheduler = new PlanningCenterScheduler(model);
+			await planningCenterScheduler.SubmitScheduling();
 		}
 
 		static async Task TestQueryNeededPosition()
@@ -33,6 +36,7 @@ namespace PlanningCenterScheduleUploader
 			{
 				var serviceTypeId = await GetServiceType(pco, "Sunday and Other Services");
 				var planTemplateID = await GetPlanTemplate(pco, serviceTypeId, "Sunday Service");
+				await GetPlans(pco, serviceTypeId);
 				var teamId = await GetTeam(pco, serviceTypeId, "Live Stream");
 				var teamPositionIds = await GetTeamPositions(pco, teamId, serviceTypeId);
 				var peopleIds = await GetPeople(pco, teamId);
@@ -85,6 +89,24 @@ namespace PlanningCenterScheduleUploader
 			Console.WriteLine();
 
 			return id;
+		}
+
+		private static async Task GetPlans(PlanningCenter pco, string withId)
+		{
+			var results = await pco.Services.GetPlans(withId);
+
+			Console.WriteLine($"Plans");
+			Console.WriteLine("======");
+
+			do
+			{
+				foreach (var result in results.data)
+				{
+					Console.WriteLine($"{result.id} {result.attributes.dates}");
+				}
+				results = await pco.Services.GetNextRequest<GetPlansResponse.Rootobject>(results.links);
+			} while (results != null);
+			Console.WriteLine();
 		}
 
 		private static async Task<string> GetTeam(PlanningCenter pco, string withId, string find)

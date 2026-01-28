@@ -10,4 +10,12 @@
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Scheduler\Core\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PlanningCenterAPI\PlanningCenterAPI.csproj" />
+  </ItemGroup>
+
 </Project>

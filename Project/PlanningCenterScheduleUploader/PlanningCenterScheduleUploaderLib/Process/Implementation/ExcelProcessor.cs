@@ -9,7 +9,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 	public class ExcelProcessor : ISourceProcessor
 	{
 		private const string DateColumnName = "date";
-
+		private const string DataFormat = "d MMM yyyy";
 		private string excelFilePath;
 
 		public ExcelProcessor(string excelFilePath)
@@ -53,10 +53,13 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 		private IScheduleAssignmentsModel LoadAssignmentsModel(DataTable schedule)
 		{
+
+			// TODO: This is messing and error promne much fix!
 			IScheduleAssignmentsModel scheduleAssignmentsModel = new ScheduleAssignmentsModel();
 
 			var isFirstRow = true;
 			var dateColumnName = string.Empty;
+			var roleColumn = new Dictionary<DataColumn, string>();
 			foreach (DataRow assignRow in schedule.Rows)
 			{
 				if (isFirstRow)
@@ -72,27 +75,28 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 							continue;
 						}
 
-						scheduleAssignmentsModel.AddRole(roleName);
+						roleColumn.Add(role, roleName);
 					}
 				}
 				else
 				{
 					var date = DateTime.Now;
-					var persons = new List<string>();
+					IScheduleAssignmentModel scheduleAssignment = null;
 
 					foreach (DataColumn role in schedule.Columns)
 					{
 						if (role.ColumnName == dateColumnName)
 						{
 							date = assignRow.Field<DateTime>(role);
+							scheduleAssignment = new ScheduleAssignmentModel(date.ToString(DataFormat));
 						}
 						else
 						{
-							persons.Add(assignRow[role] as string);
+							scheduleAssignment.AddPersonToRole(roleColumn[role], assignRow.Field<string>(role));
 						}
 					}
 
-					scheduleAssignmentsModel.AddAssignment(date.ToString(), persons);
+					scheduleAssignmentsModel.AddAssignment(scheduleAssignment);
 				}
 			}
 

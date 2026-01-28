@@ -6,6 +6,8 @@
 	public interface IScheduleAssignmentModel
 	{
 		public string Date { get; set; }
-		public List<string> Persons { get; set; }
+		public Dictionary<string, string> RolePersons { get; set; }
+
+		public void AddPersonToRole(string role, string person);
 	}
 }
