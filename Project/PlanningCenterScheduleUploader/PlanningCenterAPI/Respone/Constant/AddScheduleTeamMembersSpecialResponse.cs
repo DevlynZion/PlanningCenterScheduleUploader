@@ -1,21 +1,40 @@
 ﻿namespace PlanningCenterAPI.Respone.Constant
 {
-	public class AddScheduleTeamMembersResponse
+	public class AddScheduleTeamMembersSpecialResponse
 	{
 		public class Rootobject
 		{
-			public Data data { get; set; }
+			public Links links { get; set; }
+			public Datum[] data { get; set; }
 			public object[] included { get; set; }
 			public Meta meta { get; set; }
 		}
 
-		public class Data
+		public class Links
+		{
+			public string self { get; set; }
+		}
+
+		public class Meta
+		{
+			public int total_count { get; set; }
+			public int count { get; set; }
+			public Parent parent { get; set; }
+		}
+
+		public class Parent
+		{
+			public string id { get; set; }
+			public string type { get; set; }
+		}
+
+		public class Datum
 		{
 			public string type { get; set; }
 			public string id { get; set; }
 			public Attributes attributes { get; set; }
 			public Relationships relationships { get; set; }
-			public Links links { get; set; }
+			public Links1 links { get; set; }
 		}
 
 		public class Attributes
@@ -53,6 +72,17 @@
 
 		public class Person
 		{
+			public Data data { get; set; }
+		}
+
+		public class Data
+		{
+			public string type { get; set; }
+			public string id { get; set; }
+		}
+
+		public class Plan
+		{
 			public Data1 data { get; set; }
 		}
 
@@ -62,7 +92,7 @@
 			public string id { get; set; }
 		}
 
-		public class Plan
+		public class Scheduled_By
 		{
 			public Data2 data { get; set; }
 		}
@@ -73,7 +103,7 @@
 			public string id { get; set; }
 		}
 
-		public class Scheduled_By
+		public class Service_Type
 		{
 			public Data3 data { get; set; }
 		}
@@ -84,7 +114,7 @@
 			public string id { get; set; }
 		}
 
-		public class Service_Type
+		public class Team
 		{
 			public Data4 data { get; set; }
 		}
@@ -95,7 +125,7 @@
 			public string id { get; set; }
 		}
 
-		public class Team
+		public class Responds_To
 		{
 			public Data5 data { get; set; }
 		}
@@ -106,29 +136,7 @@
 			public string id { get; set; }
 		}
 
-		public class Responds_To
-		{
-			public Data6 data { get; set; }
-		}
-
-		public class Data6
-		{
-			public string type { get; set; }
-			public string id { get; set; }
-		}
-
 		public class Times
-		{
-			public Datum[] data { get; set; }
-		}
-
-		public class Datum
-		{
-			public string type { get; set; }
-			public string id { get; set; }
-		}
-
-		public class Service_Times
 		{
 			public Datum1[] data { get; set; }
 		}
@@ -139,28 +147,20 @@
 			public string id { get; set; }
 		}
 
-		public class Links
+		public class Service_Times
 		{
-			public string declined_plan_times { get; set; }
-			public string person { get; set; }
-			public string plan { get; set; }
-			public string plan_person_times { get; set; }
-			public string plan_times { get; set; }
-			public string team { get; set; }
-			public string self { get; set; }
-			public string html { get; set; }
+			public Datum2[] data { get; set; }
 		}
 
-		public class Meta
+		public class Datum2
 		{
-			public string[] can_include { get; set; }
-			public Parent parent { get; set; }
-		}
-
-		public class Parent
-		{
-			public string id { get; set; }
 			public string type { get; set; }
+			public string id { get; set; }
+		}
+
+		public class Links1
+		{
+			public string html { get; set; }
 		}
 	}
 }
