@@ -4,14 +4,14 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 {
 	public class ScheduleConfigModel : IScheduleConfigModel
 	{
-		public Dictionary<string, string> Config { get; set; }
+		public Dictionary<string, CellValue> Config { get; set; }
 
 		public ScheduleConfigModel() 
 		{
-			Config = new Dictionary<string, string>();
+			Config = new Dictionary<string, CellValue>();
 		}
 
-		public void AddConfig(string key, string value)
+		public void AddConfig(string key, CellValue value)
 		{
 			if(!Config.ContainsKey(key))
 			{

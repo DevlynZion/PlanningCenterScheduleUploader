@@ -80,5 +80,15 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		{
 			return await GetRequest<GetPersonByNameRespone.Rootobject>($"/services/v2/people?where[name_like]={fullName}");
 		}
+
+		public async Task<GetPlanAssignmentsRespone.Rootobject> GetPlanAssignments(string serviceTypeId, string planId, string teamId)
+		{
+			return await GetRequest<GetPlanAssignmentsRespone.Rootobject>($"/services/v2/service_types/{serviceTypeId}/plans/{planId}/team_members?where[team_id]={teamId}");
+		}
+
+		public async Task DeletePlanAssignments(string serviceTypeId, string planId, string planAssignmentId)
+		{
+			await DeleteRequest($"/services/v2/service_types/{serviceTypeId}/plans/{planId}/team_members/{planAssignmentId}");
+		}
 	}
 }

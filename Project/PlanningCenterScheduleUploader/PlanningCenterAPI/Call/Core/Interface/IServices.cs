@@ -16,5 +16,7 @@ namespace PlanningCenterAPI.Call.Core.Interface
 		public Task<AddScheduleTeamMembersResponse.Rootobject> AddScheduleTeamMembers(string serivesTypeId, string planId, string teamId, string teamPositionName, string peopleId);
 		public Task<GetPlansResponse.Rootobject> GetPlans(string serviceTypeId);
 		public Task<GetPersonByNameRespone.Rootobject> GetPersonByName(string fullName);
+		public Task<GetPlanAssignmentsRespone.Rootobject> GetPlanAssignments(string serviceTypeId, string planId, string teamId);
+		public Task DeletePlanAssignments(string serviceTypeId, string planId, string planAssignmentId);
 	}
 }

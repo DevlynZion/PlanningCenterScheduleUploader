@@ -61,6 +61,16 @@ namespace PlanningCenterAPI.Core
 			return data;
 		}
 
+		public async Task Delete(string endpoint)
+		{
+			WriteEndPoint(endpoint);
+
+			var response = await httpClient.DeleteAsync(endpoint);
+
+			await WrtieResponse(response);
+			response.EnsureSuccessStatusCode();
+		}
+
 		protected virtual void Dispose(bool disposing)
 		{
 			if (!disposedValue)

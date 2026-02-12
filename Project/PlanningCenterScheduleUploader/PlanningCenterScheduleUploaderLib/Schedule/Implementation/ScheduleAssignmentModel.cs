@@ -4,16 +4,16 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 {
 	public class ScheduleAssignmentModel : IScheduleAssignmentModel
 	{
-		public string Date { get; set; }
-		public Dictionary<string, string> RolePersons { get; set; }
+		public CellValue Date { get; set; }
+		public Dictionary<CellValue, CellValue> RolePersons { get; set; }
 
-		public ScheduleAssignmentModel(string date) 
+		public ScheduleAssignmentModel(CellValue date) 
 		{
 			Date = date;
-			RolePersons = new Dictionary<string, string>();
+			RolePersons = new Dictionary<CellValue, CellValue>();
 		}
 
-		public void AddPersonToRole(string role, string person)
+		public void AddPersonToRole(CellValue role, CellValue person)
 		{
 			if(!RolePersons.ContainsKey(role))
 			{

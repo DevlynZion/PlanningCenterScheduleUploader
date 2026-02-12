@@ -1,5 +1,6 @@
 ﻿using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
+using PlanningCenterScheduleUploaderLib;
 using PlanningCenterScheduleUploaderLib.Process.Implementation;
 using PlanningCenterScheduleUploaderLib.Scheduler.Implementation;
 
@@ -24,10 +25,26 @@ namespace PlanningCenterScheduleUploader
 
 		static async Task TestExcelProcessor()
 		{
-			var excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
-			var model = excelProcessor.CreateScheduleModel();
-			var planningCenterScheduler = new PlanningCenterScheduler(model);
-			await planningCenterScheduler.SubmitScheduling();
+			try
+			{
+				var excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
+				PlanningCenterManager planningCenterManager = new PlanningCenterManager(excelProcessor);
+				await planningCenterManager.Start();
+
+				var error = planningCenterManager.GetErrorMessages();
+
+				if(error.Any())
+				{
+					Console.WriteLine("Error");
+					Console.WriteLine("=====");
+					foreach (var item in error)
+						Console.WriteLine(item);
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+			}
 		}
 
 		static async Task TestQueryNeededPosition()

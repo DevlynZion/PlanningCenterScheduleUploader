@@ -63,7 +63,7 @@ namespace PlanningCenterAPI.Respone.Constant
 			public string ical_code { get; set; }
 			public string last_name { get; set; }
 			public string legacy_id { get; set; }
-			public DateTime logged_in_at { get; set; }
+			public DateTime? logged_in_at { get; set; }
 			public string max_permissions { get; set; }
 			public string max_plan_permissions { get; set; }
 			public string me_tab { get; set; }

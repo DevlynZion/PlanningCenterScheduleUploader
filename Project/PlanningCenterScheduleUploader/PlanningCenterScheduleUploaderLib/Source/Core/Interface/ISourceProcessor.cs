@@ -8,5 +8,6 @@ namespace PlanningCenterScheduleUploaderLib.Process.Core.Interface
 	public interface ISourceProcessor
 	{
 		public IScheduleModel CreateScheduleModel();
+		public void ProcessErrors(IScheduleModel scheduleModel);
 	}
 }

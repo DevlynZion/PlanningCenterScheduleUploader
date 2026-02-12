@@ -35,5 +35,12 @@ namespace PlanningCenterAPI.Call.Core.Base
 
 			return await rateLimiter.EnqueueAsync(request);
 		}
+
+		protected async Task DeleteRequest(string endpoint)
+		{
+			var request = new DeleteRequest(endpoint);
+
+			await rateLimiter.EnqueueAsync(request);
+		}
 	}
 }
