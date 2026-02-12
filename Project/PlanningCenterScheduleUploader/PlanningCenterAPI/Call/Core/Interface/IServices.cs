@@ -18,5 +18,6 @@ namespace PlanningCenterAPI.Call.Core.Interface
 		public Task<GetPersonByNameRespone.Rootobject> GetPersonByName(string fullName);
 		public Task<GetPlanAssignmentsRespone.Rootobject> GetPlanAssignments(string serviceTypeId, string planId, string teamId);
 		public Task DeletePlanAssignments(string serviceTypeId, string planId, string planAssignmentId);
+		public Task<GetPersonsBlockoutDaysRespone.Rootobject> GetPersonsBlockoutDays(string personId);
 	}
 }

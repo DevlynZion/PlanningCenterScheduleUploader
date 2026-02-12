@@ -90,5 +90,10 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		{
 			await DeleteRequest($"/services/v2/service_types/{serviceTypeId}/plans/{planId}/team_members/{planAssignmentId}");
 		}
+
+		public async Task<GetPersonsBlockoutDaysRespone.Rootobject> GetPersonsBlockoutDays(string personId)
+		{
+			return await GetRequest<GetPersonsBlockoutDaysRespone.Rootobject>($"/services/v2/people/{personId}/plan_people");
+		}
 	}
 }

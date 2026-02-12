@@ -27,9 +27,8 @@ namespace PlanningCenterScheduleUploaderLib
 				await planningCenterScheduler.DoChecks();
 				//3.Clear Plans for team on Planning Centre.
 				await planningCenterScheduler.ClearPlans();
-				//4.Check if person is not assigned already on another team.
-				//5.Mark in excel file all errors.
-				//6.Submit assignments on Planning Centre.
+				//4.Mark in excel file all errors.
+				//5.Submit assignments on Planning Centre.
 			}
 			catch(ArgumentException ex)
 			{

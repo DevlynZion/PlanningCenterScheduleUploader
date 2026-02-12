@@ -45,6 +45,10 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 				await CheckPeople(pco);
 				// 2.6 Does the people exist in their assign roles on Planning Centre(Not sure if needed).
 				await CheckPeopleInRoles(pco);
+				// 2.7 Check for person blockouts days.
+				await CheckForPersonsBlockedOutDays(pco);
+				// 2.8 Check if person is assigned elsewhere.
+				await CheckIfPersonsAreNotAssignedOnOtherTeams(pco);
 			}
 		}
 
@@ -156,6 +160,21 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		private async Task CheckPeopleInRoles(PlanningCenter pco)
 		{
 			// TODO: May or May not need will see later
+		}
+
+		private async Task CheckForPersonsBlockedOutDays(PlanningCenter pco)
+		{
+			foreach (var person in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Values.Select(p => p.Value)).Distinct())
+			{
+				var personBlockedOutDaysResults = await pco.Services.GetPersonsBlockoutDays(personIds[person]);
+				// TODO: Redo Model; to allow to keep the IDs and Cell data so we can minimize query fetching.
+				//       May also need other object to cache results from fetches.
+			}
+		}
+
+		private async Task CheckIfPersonsAreNotAssignedOnOtherTeams(PlanningCenter pco)
+		{
+
 		}
 
 		private async Task<string> GetServiceTypeId(PlanningCenter pco)
