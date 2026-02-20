@@ -1,12 +1,8 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using ExcelDataReader;
+﻿using ExcelDataReader;
 using PlanningCenterScheduleUploaderLib.Process.Core.Interface;
-using PlanningCenterScheduleUploaderLib.Schedule.Core.Interface;
+using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 using System.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using CellValue = PlanningCenterScheduleUploaderLib.Schedule.Implementation.CellValue;
 
 namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 {
@@ -16,6 +12,9 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 		private const string ScheduleTabName = "Schedule";
 		private const string DateColumnName = "date";
 		private const string DataFormat = "d MMM yyyy";
+		private const int ConfigKeyColumnIndex = 0;
+		private const int ConfigValueColumnIndex = 1;
+
 		private string excelFilePath;
 
 		public ExcelProcessor(string excelFilePath)
@@ -24,7 +23,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 		}
 
-		public IScheduleModel CreateScheduleModel()
+		public ScheduleContext CreateScheduleModel()
 		{
 			using (var stream = File.Open(excelFilePath, FileMode.Open, FileAccess.Read))
 			using (var reader = ExcelReaderFactory.CreateReader(stream))
@@ -34,68 +33,83 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 				var Setup = result.Tables[SetupTabName];
 				var Schedule = result.Tables[ScheduleTabName];
 
-				IScheduleConfigModel scheduleConfigModel = LoadConfig(Setup);
-				IScheduleAssignmentsModel scheduleAssignmentsModel = LoadAssignmentsModel(Schedule);
+				var rawConfigRows = LoadConfig(Setup);
+				var rawScheduleRows = LoadAssignmentsModel(Schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateTime>> rawScheduleDateRow);
 
-				return new ScheduleModel(scheduleConfigModel, scheduleAssignmentsModel);
+				var ScheduleContextFactory = new ScheduleContextFactory();
+
+				return ScheduleContextFactory.Create(rawConfigRows, rawScheduleRows, rawScheduleRoleRow, rawScheduleDateRow);
 			}
 		}
 
-		public void ProcessErrors(IScheduleModel scheduleModel)
+		public void ProcessErrors(ScheduleContext scheduleContext)
 		{
-			using (var workbook = new XLWorkbook(excelFilePath))
-			{
-				foreach (var cell in scheduleModel.CellsToChange)
-				{
-					var worksheet = workbook.Worksheet(cell.Tab);
-					worksheet.Cell(cell.Row + 1, cell.Colnum + 1).Style.Fill.BackgroundColor = cell.ChangeColourTo;
-				}
-				workbook.Save();
-			}
+			//using (var workbook = new XLWorkbook(excelFilePath))
+			//{
+			//	foreach (var cell in scheduleContext.CellsToChange)
+			//	{
+			//		var worksheet = workbook.Worksheet(cell.Tab);
+			//		worksheet.Cell(cell.Row + 1, cell.Colnum + 1).Style.Fill.BackgroundColor = cell.ChangeColourTo;
+			//	}
+			//	workbook.Save();
+			//}
 		}
 
-		private IScheduleConfigModel LoadConfig(DataTable setup)
+		private List<RawConfigRow> LoadConfig(DataTable setup)
 		{
-			IScheduleConfigModel scheduleConfigModel = new ScheduleConfigModel();
+			List<RawConfigRow> rawConfigRows = new List<RawConfigRow>();
 
 			foreach (DataRow setupRow in setup.Rows)
 			{
-				var configKey = setupRow[0] as string;
-				var configVale = setupRow[1] as string;
+				var configKey = setupRow.Field<string>(ConfigKeyColumnIndex);
+				var configValue = setupRow.Field<string>(ConfigValueColumnIndex);
+				var rowNumber = setup.Rows.IndexOf(setupRow);
 
-				if (configKey != null)
+				if (string.IsNullOrWhiteSpace(configKey))
+					continue;
+
+				var rawConfigRow = new RawConfigRow()
 				{
-					var configCellValue = new CellValue()
+					ConfigKey = new CellValue<string>()
 					{
-						Tab = SetupTabName,
-						Colnum = 1,
-						Row = setup.Rows.IndexOf(setupRow),
-						Value = configVale
-					};
-					scheduleConfigModel.AddConfig(configKey, configCellValue);
-				}
+						RowNumber = rowNumber,
+						ColumnIndex = ConfigKeyColumnIndex,
+						Value = configKey
+					},
+					ConfigValue = new CellValue<string>()
+					{
+						RowNumber = rowNumber,
+						ColumnIndex = ConfigValueColumnIndex,
+						Value = configValue
+					}
+				};
+
+				rawConfigRows.Add(rawConfigRow);
 			}
 
-			return scheduleConfigModel;
+			return rawConfigRows;
 		}
 
-		private IScheduleAssignmentsModel LoadAssignmentsModel(DataTable schedule)
+		private List<RawScheduleRow> LoadAssignmentsModel(DataTable schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateTime>> rawScheduleDateRow)
 		{
-
-			// TODO: This is messing and error promne much fix!
-			IScheduleAssignmentsModel scheduleAssignmentsModel = new ScheduleAssignmentsModel();
+			List<RawScheduleRow> rawScheduleRows = new List<RawScheduleRow>();
 
 			var isFirstRow = true;
 			var dateColumnName = string.Empty;
-			var roleColumn = new Dictionary<DataColumn, CellValue>();
+			rawScheduleRoleRow = new Dictionary<int, CellValue<string>>();
+			rawScheduleDateRow = new List<CellValue<DateTime>>();
 			foreach (DataRow assignRow in schedule.Rows)
 			{
+				var rowNumber = schedule.Rows.IndexOf(assignRow);
 				if (isFirstRow)
 				{
 					isFirstRow = false;
 					foreach (DataColumn role in schedule.Columns)
 					{
-						var roleName = assignRow[role] as string;
+						var roleName = assignRow.Field<string>(role);
+
+						if (string.IsNullOrWhiteSpace(roleName))
+							continue;
 
 						if (roleName.ToLowerInvariant() == DateColumnName)
 						{
@@ -103,55 +117,58 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 							continue;
 						}
 
-						var roleCellValue = new CellValue()
+						CellValue<string> newRole = new CellValue<string>()
 						{
-							Tab = ScheduleTabName,
-							Colnum = schedule.Columns.IndexOf(role),
-							Row = schedule.Rows.IndexOf(assignRow),
+							RowNumber = rowNumber,
+							ColumnIndex = schedule.Columns.IndexOf(role),
 							Value = roleName
 						};
 
-						roleColumn.Add(role, roleCellValue);
+						rawScheduleRoleRow.Add(newRole.ColumnIndex, newRole);
 					}
 				}
 				else
 				{
-					var date = DateTime.Now;
-					IScheduleAssignmentModel scheduleAssignment = null;
-
+					var date = DateTime.MinValue;
 					foreach (DataColumn role in schedule.Columns)
 					{
+						var columnIndex = schedule.Columns.IndexOf(role);
 						if (role.ColumnName == dateColumnName)
 						{
 							date = assignRow.Field<DateTime>(role);
-							var dateCellValue = new CellValue()
+							rawScheduleDateRow.Add(new CellValue<DateTime>()
 							{
-								Tab = ScheduleTabName,
-								Colnum = schedule.Columns.IndexOf(role),
-								Row = schedule.Rows.IndexOf(assignRow),
-								Value = date.ToString(DataFormat)
-							};
-							scheduleAssignment = new ScheduleAssignmentModel(dateCellValue);
+								RowNumber = rowNumber,
+								ColumnIndex = columnIndex,
+								Value = date
+							});
 						}
 						else
 						{
-							var dateCellValue = new CellValue()
+							var person = assignRow.Field<string>(role);
+							var roleName = rawScheduleRoleRow[columnIndex];
+
+							if (string.IsNullOrWhiteSpace(person))
+								continue;
+
+							var rawScheduleRow = new RawScheduleRow()
 							{
-								Tab = ScheduleTabName,
-								Colnum = schedule.Columns.IndexOf(role),
-								Row = schedule.Rows.IndexOf(assignRow),
-								Value = assignRow.Field<string>(role)
+								Date = date,
+								Role = roleName.Value,
+								PersonName = new CellValue<string>()
+								{
+									RowNumber = rowNumber,
+									ColumnIndex = columnIndex,
+									Value = person
+								}
 							};
-							scheduleAssignment.AddPersonToRole(roleColumn[role], dateCellValue);
+							rawScheduleRows.Add(rawScheduleRow);
 						}
 					}
-
-					scheduleAssignmentsModel.AddAssignment(scheduleAssignment);
 				}
 			}
 
-			return scheduleAssignmentsModel;
+			return rawScheduleRows;
 		}
-
 	}
 }

@@ -1,7 +1,9 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
-using PlanningCenterScheduleUploaderLib.Schedule.Core.Interface;
+using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
+using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 
 namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 {
@@ -13,20 +15,11 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		private const string ServiceTypeConfigName = "Service Type";
 		private const string TeamConfigName = "Team";
 
-		private IScheduleModel scheduleModel;
-		private Dictionary<string, string> personIds;
-		private Dictionary<string, string> planIds;
-		private Dictionary<string, string> roleIds;
+		private ScheduleContext scheduleContext;
 
-		private string serviceTypeId;
-		private string teamId;
-
-		public PlanningCenterScheduler(IScheduleModel scheduleModel)
+		public PlanningCenterScheduler(ScheduleContext scheduleContext)
 		{
-			this.scheduleModel = scheduleModel;
-			personIds = new Dictionary<string, string>();
-			planIds = new Dictionary<string, string>();
-			roleIds = new Dictionary<string, string>();
+			this.scheduleContext = scheduleContext;
 		}
 
 		public async Task DoChecks()
@@ -56,7 +49,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		{
 			using (PlanningCenter pco = new PlanningCenter())
 			{
-				foreach (var plan in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel.Select(a => a.Date))
+				foreach (var plan in scheduleContext.ScheduleDates)
 				{
 					var results = await pco.Services.GetPlanAssignments(serviceTypeId, planIds[plan], teamId);
 
@@ -70,7 +63,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		{
 			using (PlanningCenter pco = new PlanningCenter())
 			{
-				foreach (var scheduleAssignment in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel)
+				foreach (var scheduleAssignment in scheduleContext.ScheduleAssignmentsModel.ScheduleAssignmentModel)
 				{
 					var planId = planIds[scheduleAssignment.Date.Value];
 					foreach (var assignment in scheduleAssignment.RolePersons)
@@ -85,11 +78,11 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 
 			if (string.IsNullOrEmpty(serviceTypeId))
 			{
-				var message = $"The {ServiceTypeConfigName} called {scheduleModel.ScheduleConfigModel.Config[ServiceTypeConfigName].Value} in the Config tab, does not exist on Planning Center";
-				scheduleModel.Errors.Add(message);
-				var serviceTypeConfigCell = scheduleModel.ScheduleConfigModel.Config[ServiceTypeConfigName];
+				var message = $"The {ServiceTypeConfigName} called {scheduleContext.ScheduleConfigModel.Config[ServiceTypeConfigName].Value} in the Config tab, does not exist on Planning Center";
+				scheduleContext.Errors.Add(message);
+				var serviceTypeConfigCell = scheduleContext.ScheduleConfigModel.Config[ServiceTypeConfigName];
 				serviceTypeConfigCell.ChangeColourTo = XLColor.Red;
-				scheduleModel.CellsToChange.Add(serviceTypeConfigCell);
+				scheduleContext.CellsToChange.Add(serviceTypeConfigCell);
 				throw new ArgumentException(message);
 			}
 		}
@@ -98,14 +91,14 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		{
 			planIds = await GetPlans(pco, serviceTypeId);
 
-			foreach (var plan in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel.Select(a => a.Date).Distinct())
+			foreach (var plan in scheduleContext.ScheduleAssignmentsModel.ScheduleAssignmentModel.Select(a => a.Date).Distinct())
 			{
 				if(!planIds.ContainsKey(plan))
 				{
 					var message = $"The Date {plan} in the Schedule tab, does not exist on Planning Center";
-					scheduleModel.Errors.Add(message);
+					scheduleContext.Errors.Add(message);
 					plan.ChangeColourTo = XLColor.Red;
-					scheduleModel.CellsToChange.Add(plan);
+					scheduleContext.CellsToChange.Add(plan);
 				}
 			}
 		}
@@ -116,11 +109,11 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 
 			if(string.IsNullOrEmpty(teamId))
 			{
-				var message = $"The {TeamConfigName} called {scheduleModel.ScheduleConfigModel.Config[TeamConfigName].Value} in the Config tab, does not exist on Planning Center";
-				scheduleModel.Errors.Add(message);
-				var teamConfigCell = scheduleModel.ScheduleConfigModel.Config[TeamConfigName];
+				var message = $"The {TeamConfigName} called {scheduleContext.ScheduleConfigModel.Config[TeamConfigName].Value} in the Config tab, does not exist on Planning Center";
+				scheduleContext.Errors.Add(message);
+				var teamConfigCell = scheduleContext.ScheduleConfigModel.Config[TeamConfigName];
 				teamConfigCell.ChangeColourTo = XLColor.Red;
-				scheduleModel.CellsToChange.Add(teamConfigCell);
+				scheduleContext.CellsToChange.Add(teamConfigCell);
 				throw new ArgumentException(message);
 			}
 		}
@@ -129,14 +122,14 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		{
 			roleIds = await GetRoles(pco, teamId);
 
-			foreach (var role in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Keys).Distinct())
+			foreach (var role in scheduleContext.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Keys).Distinct())
 			{
 				if(!roleIds.ContainsKey(role))
 				{
 					var message = $"The Role called {role} in the Schedule tab, does not exist on Planning Center";
-					scheduleModel.Errors.Add(message);
+					scheduleContext.Errors.Add(message);
 					role.ChangeColourTo = XLColor.Red;
-					scheduleModel.CellsToChange.Add(role);
+					scheduleContext.CellsToChange.Add(role);
 				}
 			}
 		}
@@ -145,14 +138,14 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		{
 			personIds = await GetPeopleInTeam(pco, teamId);
 
-			foreach(var person in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Values))
+			foreach(var person in scheduleContext.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Values))
 			{
 				if (!personIds.ContainsKey(person))
 				{
 					var message = $"The Person called {person} in the Schedule tab, does not exist on Planning Center";
-					scheduleModel.Errors.Add(message);
+					scheduleContext.Errors.Add(message);
 					person.ChangeColourTo = XLColor.Red;
-					scheduleModel.CellsToChange.Add(person);
+					scheduleContext.CellsToChange.Add(person);
 				}
 			}
 		}
@@ -164,7 +157,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 
 		private async Task CheckForPersonsBlockedOutDays(PlanningCenter pco)
 		{
-			foreach (var person in scheduleModel.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Values.Select(p => p.Value)).Distinct())
+			foreach (var person in scheduleContext.ScheduleAssignmentsModel.ScheduleAssignmentModel.SelectMany(a => a.RolePersons.Values.Select(p => p.Value)).Distinct())
 			{
 				var personBlockedOutDaysResults = await pco.Services.GetPersonsBlockoutDays(personIds[person]);
 				// TODO: Redo Model; to allow to keep the IDs and Cell data so we can minimize query fetching.
@@ -179,17 +172,44 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 
 		private async Task<string> GetServiceTypeId(PlanningCenter pco)
 		{
-			var serviceType = await pco.Services.GetServiceTypesByName(scheduleModel.ScheduleConfigModel.Config[ServiceTypeConfigName].Value);
+			if(!string.IsNullOrWhiteSpace(scheduleContext.CachedManager.ServiceTypeId))
+				return scheduleContext.CachedManager.ServiceTypeId;
+
+			if (!scheduleContext.Configs.TryGetValue(ServiceTypeConfigName, out CellValue<string> configValue))
+			{
+				var message = $"Could not find the {ServiceTypeConfigName} config in the Config tab";
+				scheduleContext.Errors.Add(new ScheduleErrors()
+				{
+					ErrorLevel = ErrorLevel.Error,
+					Message = message
+				});
+				throw new ArgumentException(message);
+			}
+
+			if(!configValue.HasValue)
+			{
+				var message = $"The {ServiceTypeConfigName} has not been set in the Config tab";
+				scheduleContext.Errors.Add(new ScheduleErrors()
+				{
+					ErrorLevel = ErrorLevel.Error,
+					Message = message
+				});
+				throw new ArgumentException(message);
+			}
+
+			var serviceType = await pco.Services.GetServiceTypesByName(configValue.Value);
 
 			if (!serviceType.data.Any())
 				return string.Empty;
 
-			return serviceType.data.FirstOrDefault().id;
+			scheduleContext.CachedManager.ServiceTypeId = serviceType.data.First().id;
+
+			return scheduleContext.CachedManager.ServiceTypeId;
 		}
 
 		private async Task<string> GetTeameId(PlanningCenter pco, string serviceTypeId)
 		{
-			var teamId = await pco.Services.GetTeamByName(serviceTypeId, scheduleModel.ScheduleConfigModel.Config[TeamConfigName].Value);
+			var teamId = await pco.Services.GetTeamByName(serviceTypeId, scheduleContext.ScheduleConfigModel.Config[TeamConfigName].Value);
 
 			if (!teamId.data.Any())
 				return string.Empty;

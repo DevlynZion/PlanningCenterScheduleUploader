@@ -1,5 +1,5 @@
 ﻿using PlanningCenterScheduleUploaderLib.Process.Core.Interface;
-using PlanningCenterScheduleUploaderLib.Schedule.Core.Interface;
+using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 using PlanningCenterScheduleUploaderLib.Scheduler.Implementation;
 
 namespace PlanningCenterScheduleUploaderLib
@@ -8,7 +8,7 @@ namespace PlanningCenterScheduleUploaderLib
 	{
 		private ISourceProcessor sourceProcessor;
 		private PlanningCenterScheduler planningCenterScheduler;
-		private IScheduleModel scheduleModel;
+		private ScheduleContext scheduleContext;
 
 		public PlanningCenterManager(ISourceProcessor sourceProcessor)
 		{
@@ -21,8 +21,8 @@ namespace PlanningCenterScheduleUploaderLib
 			try
 			{
 				//1.Input Excel with scheduling data.
-				scheduleModel = sourceProcessor.CreateScheduleModel();
-				planningCenterScheduler = new PlanningCenterScheduler(scheduleModel);
+				scheduleContext = sourceProcessor.CreateScheduleModel();
+				planningCenterScheduler = new PlanningCenterScheduler(scheduleContext);
 				//2.Do Checks on Data with Planning Centre.
 				await planningCenterScheduler.DoChecks();
 				//3.Clear Plans for team on Planning Centre.
@@ -36,13 +36,13 @@ namespace PlanningCenterScheduleUploaderLib
 			}
 			finally
 			{
-				sourceProcessor.ProcessErrors(scheduleModel);
+				sourceProcessor.ProcessErrors(scheduleContext);
 			}
 		}
 
 		public List<string> GetErrorMessages()
 		{
-			return scheduleModel.Errors;
+			return scheduleContext.Errors;
 		}
 	}
 }
