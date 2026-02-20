@@ -10,6 +10,9 @@ namespace PlanningCenterScheduleUploaderLib
 		private PlanningCenterScheduler planningCenterScheduler;
 		private ScheduleContext scheduleContext;
 
+		public bool AnyErrors => scheduleContext.Errors.Any();
+		public List<ScheduleErrors> Errors => scheduleContext.Errors;
+
 		public PlanningCenterManager(ISourceProcessor sourceProcessor)
 		{
 			this.sourceProcessor = sourceProcessor;
@@ -38,11 +41,6 @@ namespace PlanningCenterScheduleUploaderLib
 			{
 				sourceProcessor.ProcessErrors(scheduleContext);
 			}
-		}
-
-		public List<string> GetErrorMessages()
-		{
-			return scheduleContext.Errors;
 		}
 	}
 }

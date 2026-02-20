@@ -2,7 +2,6 @@
 using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterScheduleUploaderLib;
 using PlanningCenterScheduleUploaderLib.Process.Implementation;
-using PlanningCenterScheduleUploaderLib.Scheduler.Implementation;
 
 namespace PlanningCenterScheduleUploader
 {
@@ -25,25 +24,25 @@ namespace PlanningCenterScheduleUploader
 
 		static async Task TestExcelProcessor()
 		{
+			var excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
+			PlanningCenterManager planningCenterManager = new PlanningCenterManager(excelProcessor);
 			try
 			{
-				var excelProcessor = new ExcelProcessor(@"./Schedule.xlsx");
-				PlanningCenterManager planningCenterManager = new PlanningCenterManager(excelProcessor);
 				await planningCenterManager.Start();
-
-				var error = planningCenterManager.GetErrorMessages();
-
-				if(error.Any())
-				{
-					Console.WriteLine("Error");
-					Console.WriteLine("=====");
-					foreach (var item in error)
-						Console.WriteLine(item);
-				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
+			}
+			finally
+			{
+				if (planningCenterManager.AnyErrors)
+				{
+					Console.WriteLine("Error");
+					Console.WriteLine("=====");
+					foreach (var error in planningCenterManager.Errors)
+						Console.WriteLine($"{error.ErrorLevel.ToString()} - [{error.CellCoordinate.TabName}, {error.CellCoordinate.RowNumber}, {error.CellCoordinate.RowNumber}] {error.Message}");
+				}
 			}
 		}
 

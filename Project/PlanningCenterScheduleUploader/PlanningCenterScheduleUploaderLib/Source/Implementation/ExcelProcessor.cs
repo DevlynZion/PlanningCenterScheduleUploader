@@ -1,4 +1,6 @@
-﻿using ExcelDataReader;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelDataReader;
 using PlanningCenterScheduleUploaderLib.Process.Core.Interface;
 using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
@@ -11,7 +13,6 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 		private const string SetupTabName = "Setup";
 		private const string ScheduleTabName = "Schedule";
 		private const string DateColumnName = "date";
-		private const string DataFormat = "d MMM yyyy";
 		private const int ConfigKeyColumnIndex = 0;
 		private const int ConfigValueColumnIndex = 1;
 
@@ -44,15 +45,24 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 		public void ProcessErrors(ScheduleContext scheduleContext)
 		{
-			//using (var workbook = new XLWorkbook(excelFilePath))
-			//{
-			//	foreach (var cell in scheduleContext.CellsToChange)
-			//	{
-			//		var worksheet = workbook.Worksheet(cell.Tab);
-			//		worksheet.Cell(cell.Row + 1, cell.Colnum + 1).Style.Fill.BackgroundColor = cell.ChangeColourTo;
-			//	}
-			//	workbook.Save();
-			//}
+			using (var workbook = new XLWorkbook(excelFilePath))
+			{
+				foreach (var error in scheduleContext.Errors)
+				{
+					var worksheet = workbook.Worksheet(error.CellCoordinate.TabName);
+
+					var changeColourTo = error.ErrorLevel switch
+					{
+						ErrorLevel.Error => XLColor.Crimson,
+						ErrorLevel.Warnning => XLColor.Yellow,
+						ErrorLevel.Information => XLColor.SkyBlue,
+						_ => XLColor.NoColor,
+					};
+
+					worksheet.Cell(error.CellCoordinate.RowNumber + 1, error.CellCoordinate.ColumnIndex + 1).Style.Fill.BackgroundColor = changeColourTo;
+				}
+				workbook.Save();
+			}
 		}
 
 		private List<RawConfigRow> LoadConfig(DataTable setup)
@@ -72,12 +82,14 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 				{
 					ConfigKey = new CellValue<string>()
 					{
+						TabName = SetupTabName,
 						RowNumber = rowNumber,
 						ColumnIndex = ConfigKeyColumnIndex,
 						Value = configKey
 					},
 					ConfigValue = new CellValue<string>()
 					{
+						TabName = SetupTabName,
 						RowNumber = rowNumber,
 						ColumnIndex = ConfigValueColumnIndex,
 						Value = configValue
@@ -119,6 +131,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 						CellValue<string> newRole = new CellValue<string>()
 						{
+							TabName = ScheduleTabName,
 							RowNumber = rowNumber,
 							ColumnIndex = schedule.Columns.IndexOf(role),
 							Value = roleName
@@ -138,6 +151,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 							date = assignRow.Field<DateTime>(role);
 							rawScheduleDateRow.Add(new CellValue<DateTime>()
 							{
+								TabName = ScheduleTabName,
 								RowNumber = rowNumber,
 								ColumnIndex = columnIndex,
 								Value = date
@@ -157,6 +171,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 								Role = roleName.Value,
 								PersonName = new CellValue<string>()
 								{
+									TabName = ScheduleTabName,
 									RowNumber = rowNumber,
 									ColumnIndex = columnIndex,
 									Value = person
