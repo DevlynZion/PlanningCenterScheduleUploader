@@ -1,9 +1,10 @@
-﻿using ClosedXML.Excel;
-using PlanningCenterAPI;
+﻿using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
+using PlanningCenterScheduleUploaderLib.Pipeline.Core.Interface;
+using PlanningCenterScheduleUploaderLib.Pipeline.Implementation;
 using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
-using System.Collections.Generic;
+using PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCenterValidation;
 
 namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 {
@@ -27,10 +28,23 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 		{
 			using (PlanningCenter pco = new PlanningCenter())
 			{
+				var scheduleContextPipeline = CreateScheduleContextPipeline(pco);
+
+				var result = await scheduleContextPipeline.Execute(scheduleContext);
+
+				if (!result.IsValid)
+				{
+					//foreach (var error in result.Errors)
+					//	Console.WriteLine(error);
+				}
+			}
+
+			using (PlanningCenter pco = new PlanningCenter())
+			{
 				// 2.1 Does Service Type exist on Planning Centre.
-				await CheckServiceType(pco);
+				//await CheckServiceType(pco);
 				// 2.2 Does Plans exist on Planning Centre.
-				await CheckPlans(pco);
+				//await CheckPlans(pco);
 				// 2.3 Does Team exist on Planning Centre.
 				await CheckTeam(pco);
 				// 2.4 Does Roles exist on Planning Centre.
@@ -73,6 +87,25 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 					await pco.Services.AddScheduleTeamMembers(scheduleContext.CachedManager.ServiceTypeId, planId, scheduleContext.CachedManager.TeamId, assignment.Role, scheduleContext.CachedManager.GetPerson(assignment.PersonName.Value));
 				}
 			}
+		}
+
+		private Pipeline<ScheduleContext> CreateScheduleContextPipeline(PlanningCenter pco)
+		{
+			var scheduleContextSteps = new IPipelineStep<ScheduleContext> []
+			{
+				// 2.1 Does Service Type exist on Planning Centre.
+				new ServiceTypeValidationStep(pco),
+				// 2.2 Does Plans exist on Planning Centre.
+				new PlansValidationStep(pco),
+				// 2.3 Does Team exist on Planning Centre.
+				// 2.4 Does Roles exist on Planning Centre.
+				// 2.5 Does the people exist on Planning Centre.
+				// 2.6 Does the people exist in their assign roles on Planning Centre(Not sure if needed).
+				// 2.7 Check for person blockouts days.
+				// 2.8 Check if person is assigned elsewhere.
+		};
+
+			return new Pipeline<ScheduleContext>(scheduleContextSteps);
 		}
 
 		private async Task CheckServiceType(PlanningCenter pco)

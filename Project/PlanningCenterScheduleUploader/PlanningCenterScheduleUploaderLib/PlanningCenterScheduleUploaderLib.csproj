@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Scheduler\Core\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PlanningCenterAPI\PlanningCenterAPI.csproj" />
   </ItemGroup>
 
