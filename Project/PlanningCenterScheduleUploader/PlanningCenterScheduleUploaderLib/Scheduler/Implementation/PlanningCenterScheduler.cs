@@ -3,6 +3,7 @@ using PlanningCenterAPI;
 using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
+using System.Collections.Generic;
 
 namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 {
@@ -29,7 +30,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 				// 2.1 Does Service Type exist on Planning Centre.
 				await CheckServiceType(pco);
 				// 2.2 Does Plans exist on Planning Centre.
-				await CheckPlan(pco);
+				await CheckPlans(pco);
 				// 2.3 Does Team exist on Planning Centre.
 				await CheckTeam(pco);
 				// 2.4 Does Roles exist on Planning Centre.
@@ -91,11 +92,12 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 			}
 		}
 
-		private async Task CheckPlan(PlanningCenter pco)
+		private async Task CheckPlans(PlanningCenter pco)
 		{
 			var planIds = await GetPlans(pco, scheduleContext.CachedManager.ServiceTypeId);
 
-			foreach (var plan in scheduleContext.ScheduleDates)
+			var removeInvadatePlans = new List<CellValue<DateTime>>();
+            foreach (var plan in scheduleContext.ScheduleDates)
 			{
 				if(!planIds.ContainsKey(plan.Value))
 				{
@@ -106,9 +108,16 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 						CellCoordinate = plan,
 						Message = message
 					});
-				}
+                    removeInvadatePlans.Add(plan);
+                }
 			}
-		}
+
+            for(var k =0; k < removeInvadatePlans.Count; k++)
+			{
+				var plan = removeInvadatePlans[k];
+                scheduleContext.ScheduleDates.Remove(plan);
+            }
+        }
 
 		private async Task CheckTeam(PlanningCenter pco)
 		{
@@ -279,7 +288,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 			do
 			{
 				foreach (var result in results.data)
-					scheduleContext.CachedManager.AddPlan(result.attributes.sort_date, result.id);
+					scheduleContext.CachedManager.AddPlan(result.attributes.sort_date.Date, result.id);
 
 				results = await pco.Services.GetNextRequest<GetPlansResponse.Rootobject>(results.links);
 			} while (results != null);

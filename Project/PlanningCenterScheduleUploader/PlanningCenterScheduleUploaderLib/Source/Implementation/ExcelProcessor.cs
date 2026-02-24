@@ -154,7 +154,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 								TabName = ScheduleTabName,
 								RowNumber = rowNumber,
 								ColumnIndex = columnIndex,
-								Value = date
+								Value = date.Date
 							});
 						}
 						else
