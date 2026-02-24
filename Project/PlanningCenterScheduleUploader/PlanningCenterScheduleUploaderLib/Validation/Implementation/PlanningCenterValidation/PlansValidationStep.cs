@@ -33,7 +33,6 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 
 			var planIds = await GetPlans(pco, scheduleContext);
 
-			//var removeInvadatePlans = new List<CellValue<DateTime>>();
 			foreach (var plan in scheduleContext.ScheduleDates)
 			{
 				if (!planIds.ContainsKey(plan.Value))
@@ -45,15 +44,8 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 						CellCoordinate = plan,
 						Message = message
 					});
-					//removeInvadatePlans.Add(plan);
 				}
 			}
-
-			//for (var k = 0; k < removeInvadatePlans.Count; k++)
-			//{
-			//	var plan = removeInvadatePlans[k];
-			//	scheduleContext.ScheduleDates.Remove(plan);
-			//}
 
 			return errors;
 		}
