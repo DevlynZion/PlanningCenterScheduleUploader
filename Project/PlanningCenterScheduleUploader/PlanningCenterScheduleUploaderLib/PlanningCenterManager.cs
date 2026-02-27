@@ -31,7 +31,7 @@ namespace PlanningCenterScheduleUploaderLib
 				//3.Clear Plans for team on Planning Centre.
 				await planningCenterScheduler.ClearPlans();
 				//4.Submit assignments on Planning Centre.
-				await planningCenterScheduler.SubmitScheduling();
+				//await planningCenterScheduler.SubmitScheduling();
 			}
 			finally
 			{

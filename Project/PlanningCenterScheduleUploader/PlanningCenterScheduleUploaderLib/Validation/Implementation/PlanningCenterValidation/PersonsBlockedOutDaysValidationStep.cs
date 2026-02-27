@@ -3,6 +3,7 @@ using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterScheduleUploaderLib.Pipeline.Core.Interface;
 using PlanningCenterScheduleUploaderLib.Pipeline.Implementation;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
+using PlanningCenterScheduleUploaderLib.Scheduler.Core.Constant;
 
 namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCenterValidation
 {
@@ -33,6 +34,47 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 		{
 			var errors = new List<ScheduleErrors>();
 
+			await GetBlockedDays(pco, scheduleContext);
+
+			var removeAssignments = new List<ScheduleAssignment>();
+
+			foreach(var assignment in scheduleContext.Assignments)
+			{
+				var person = assignment.PersonName.Value;
+				var personId = scheduleContext.CachedManager.GetPerson(person);
+
+				if (!scheduleContext.PersonsBlockedDays.ContainsKey(personId))
+					continue;
+
+				var blockDays = scheduleContext.PersonsBlockedDays[personId];
+				if (!blockDays.Any())
+					continue;
+
+				foreach (var block in blockDays)
+				{
+					if(assignment.Date < block.StartDate || assignment.Date > block.EndDate)
+						continue;
+
+					var message = $"Person {person} in the Schedule tab, has blocked out the from {block.StartDate.ToString(PlanningCenterConstants.DataFormat)} to {block.EndDate.ToString(PlanningCenterConstants.DataFormat)} on Planning Center. Therefore cannot serve on {assignment.Date.ToString(PlanningCenterConstants.DataFormat)}.";
+					errors.Add(new ScheduleErrors()
+					{
+						ErrorLevel = ErrorLevel.Warnning,
+						CellCoordinate = assignment.PersonName,
+						Message = message
+					});
+
+					removeAssignments.Add(assignment);
+				}
+			}
+
+			foreach (var assignment in removeAssignments)
+				scheduleContext.Assignments.Remove(assignment);
+
+			return errors;
+		}
+
+		private static async Task GetBlockedDays(PlanningCenter pco, ScheduleContext scheduleContext)
+		{
 			var personIds = scheduleContext.CachedManager.GetPersons();
 
 			foreach (var person in personIds)
@@ -59,12 +101,7 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 
 					personBlockedOutDaysResults = await pco.Services.GetNextRequest<GetPersonsBlockoutDaysRespone.Rootobject>(personBlockedOutDaysResults.links);
 				} while (personBlockedOutDaysResults != null);
-
 			}
-
-			// TODO: mark persons that are not allowed to be assigned
-
-			return errors;
 		}
 	}
 }

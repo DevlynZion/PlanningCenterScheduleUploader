@@ -1,8 +1,6 @@
 ﻿using PlanningCenterAPI;
-using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterScheduleUploaderLib.Pipeline.Core.Interface;
 using PlanningCenterScheduleUploaderLib.Pipeline.Implementation;
-using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 using PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCenterValidation;
 
