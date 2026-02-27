@@ -76,8 +76,9 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 				new PeopleValidationStep(pco, true),
 				// 2.6 Does the people exist in their assign roles on Planning Centre(Not sure if needed).
 				// 2.7 Check for person blockouts days.
-				new PersonsBlockedOutDaysValidationStep(pco, true)
+				new PersonsBlockedOutDaysValidationStep(pco, true),
 				// 2.8 Check if person is assigned elsewhere.
+				new PersonAlreadyAssignedValidationStep(pco, true)
 			};
 
 			return new Pipeline<ScheduleContext>(scheduleContextSteps);

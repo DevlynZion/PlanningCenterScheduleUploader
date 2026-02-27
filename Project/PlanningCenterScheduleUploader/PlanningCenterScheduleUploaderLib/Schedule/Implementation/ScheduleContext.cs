@@ -9,6 +9,7 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 		public Dictionary<string, CellValue<string>> ScheduleRoles { get; private set; }
 		public List<CellValue<DateTime>> ScheduleDates { get; private set; }
 		public Dictionary<string, List<PersonBlockDays>> PersonsBlockedDays { get; private set; }
+		public Dictionary<string, List<PersonAssignment>> PersonAssignments { get; private set; }
 		public ScheduleCachedManager CachedManager { get; private set; }
 		public List<ScheduleErrors> Errors { get; private set; }
 
@@ -19,6 +20,7 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 			ScheduleRoles = new Dictionary<string, CellValue<string>>();
 			ScheduleDates = new List<CellValue<DateTime>>();
 			PersonsBlockedDays = new Dictionary<string, List<PersonBlockDays>>();
+			PersonAssignments = new Dictionary<string, List<PersonAssignment>>();
 			CachedManager = new ScheduleCachedManager();
 			Errors = new List<ScheduleErrors>();
 		}

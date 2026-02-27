@@ -8,7 +8,7 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 {
 	public class Services : CallBase, IServices
 	{
-		internal Services(RateLimiter rateLimiter) : base(rateLimiter) {}
+		internal Services(RateLimiter rateLimiter) : base(rateLimiter) { }
 
 		public async Task<GetServiceTypesResponse.Rootobject> GetServiceTypes()
 		{
@@ -95,6 +95,11 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		public async Task<GetPersonsBlockoutDaysRespone.Rootobject> GetPersonsBlockoutDays(string personId)
 		{
 			return await GetRequest<GetPersonsBlockoutDaysRespone.Rootobject>($"/services/v2/people/{personId}/blockouts?filter=future");
+		}
+
+		public async Task<GetPersonsAssingmentsResponse.Rootobject> GetPersonsAssingments(string personId)
+		{
+			return await GetRequest<GetPersonsAssingmentsResponse.Rootobject>($"/services/v2/people/{personId}/plan_people");
 		}
 	}
 }

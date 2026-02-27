@@ -41,7 +41,7 @@ namespace PlanningCenterScheduleUploader
 					Console.WriteLine("Error");
 					Console.WriteLine("=====");
 					foreach (var error in planningCenterManager.Errors)
-						Console.WriteLine($"{error.ErrorLevel.ToString()} - [{error.CellCoordinate.TabName}, {error.CellCoordinate.RowNumber}, {error.CellCoordinate.RowNumber}] {error.Message}");
+						Console.WriteLine($"{error.ErrorLevel.ToString()} - [{error.CellCoordinate.TabName}, {error.CellCoordinate.RowNumber + 1}, {error.CellCoordinate.ColumnIndex + 1}] {error.Message}");
 				}
 			}
 		}
