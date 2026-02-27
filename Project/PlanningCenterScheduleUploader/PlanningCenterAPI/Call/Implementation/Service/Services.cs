@@ -73,6 +73,7 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 
 		public async Task<GetPlansResponse.Rootobject> GetPlans(string serviceTypeId)
 		{
+			// TODO: Search furture only
 			return await GetRequest<GetPlansResponse.Rootobject>($"/services/v2/service_types/{serviceTypeId}/plans");
 		}
 
@@ -93,7 +94,7 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 
 		public async Task<GetPersonsBlockoutDaysRespone.Rootobject> GetPersonsBlockoutDays(string personId)
 		{
-			return await GetRequest<GetPersonsBlockoutDaysRespone.Rootobject>($"/services/v2/people/{personId}/plan_people");
+			return await GetRequest<GetPersonsBlockoutDaysRespone.Rootobject>($"/services/v2/people/{personId}/blockouts?filter=future");
 		}
 	}
 }

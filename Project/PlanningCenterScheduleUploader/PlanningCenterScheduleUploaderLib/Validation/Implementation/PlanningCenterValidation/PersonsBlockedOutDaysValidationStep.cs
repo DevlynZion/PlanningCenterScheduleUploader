@@ -38,10 +38,31 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 			foreach (var person in personIds)
 			{
 				var personBlockedOutDaysResults = await pco.Services.GetPersonsBlockoutDays(person.Value);
+				do
+				{
+					foreach (var personBlockedOutDaysResult in personBlockedOutDaysResults.data)
+					{
+						var startDate = personBlockedOutDaysResult.attributes.starts_at;
+						var endDate = personBlockedOutDaysResult.attributes.ends_at;
 
+						if (!scheduleContext.PersonsBlockedDays.ContainsKey(person.Value))
+							scheduleContext.PersonsBlockedDays.Add(person.Value, new List<PersonBlockDays>());
 
+						var blockDay = new PersonBlockDays()
+						{
+							PersonID = person.Value,
+							StartDate = startDate,
+							EndDate = endDate
+						};
+						scheduleContext.PersonsBlockedDays[person.Value].Add(blockDay);
+					}
+
+					personBlockedOutDaysResults = await pco.Services.GetNextRequest<GetPersonsBlockoutDaysRespone.Rootobject>(personBlockedOutDaysResults.links);
+				} while (personBlockedOutDaysResults != null);
 
 			}
+
+			// TODO: mark persons that are not allowed to be assigned
 
 			return errors;
 		}
