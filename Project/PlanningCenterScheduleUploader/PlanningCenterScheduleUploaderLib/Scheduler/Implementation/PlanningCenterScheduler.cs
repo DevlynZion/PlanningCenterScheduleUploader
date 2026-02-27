@@ -29,10 +29,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 				var result = await scheduleContextPipeline.Execute(scheduleContext);
 
 				if (!result.IsValid)
-				{
 					scheduleContext.Errors.AddRange(result.Errors);
-					throw new ArgumentException("There is errors in the schedule.");
-				}
 			}
 		}
 
@@ -70,18 +67,18 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 			var scheduleContextSteps = new IPipelineStep<ScheduleContext>[]
 			{
 				// 2.1 Does Service Type exist on Planning Centre.
-				new ServiceTypeValidationStep(pco),
-				// 2.2 Does Plans exist on Planning Centre.
-				new PlansValidationStep(pco),
-				// 2.3 Does Team exist on Planning Centre.
-				new TeamValidationStep(pco),
+				new ServiceTypeValidationStep(pco, false),
+				// 2.2 Does Team exist on Planning Centre.
+				new TeamValidationStep(pco, false),
+				// 2.3 Does Plans exist on Planning Centre.
+				new PlansValidationStep(pco, true),
 				// 2.4 Does Roles exist on Planning Centre.
-				new RoleValidationStep(pco),
+				new RoleValidationStep(pco, true),
 				// 2.5 Does the people exist on Planning Centre.
-				new PeopleValidationStep(pco),
+				new PeopleValidationStep(pco, true),
 				// 2.6 Does the people exist in their assign roles on Planning Centre(Not sure if needed).
 				// 2.7 Check for person blockouts days.
-				new PersonsBlockedOutDaysValidationStep(pco)
+				new PersonsBlockedOutDaysValidationStep(pco, true)
 				// 2.8 Check if person is assigned elsewhere.
 			};
 

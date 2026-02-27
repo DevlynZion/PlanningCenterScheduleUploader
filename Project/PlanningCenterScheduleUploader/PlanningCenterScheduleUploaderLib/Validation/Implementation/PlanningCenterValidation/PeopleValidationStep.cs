@@ -8,11 +8,14 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 {
 	public class PeopleValidationStep : IPipelineStep<ScheduleContext>
 	{
+		public bool CanContine { get; }
+
 		private PlanningCenter pco;
 
-		public PeopleValidationStep(PlanningCenter pco)
+		public PeopleValidationStep(PlanningCenter pco, bool canContine)
 		{
 			this.pco = pco;
+			CanContine = canContine;
 		}
 
 		public async Task<ValidationResult> ProcessAsync(ScheduleContext input)

@@ -22,7 +22,8 @@ namespace PlanningCenterScheduleUploaderLib.Pipeline.Implementation
 				if (!result.IsValid)
 				{
 					finalResult.AddErrors(result.Errors);
-					return finalResult;
+					if (!step.CanContine)
+						return finalResult;
 				}
 			}
 

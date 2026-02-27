@@ -30,15 +30,12 @@ namespace PlanningCenterScheduleUploaderLib
 				await planningCenterScheduler.DoChecks();
 				//3.Clear Plans for team on Planning Centre.
 				await planningCenterScheduler.ClearPlans();
-				//4.Mark in excel file all errors.
-				//5.Submit assignments on Planning Centre.
-			}
-			catch(ArgumentException ex)
-			{
-				throw;
+				//4.Submit assignments on Planning Centre.
+				await planningCenterScheduler.SubmitScheduling();
 			}
 			finally
 			{
+				//5.Mark in excel file all errors.
 				sourceProcessor.ProcessErrors(scheduleContext);
 			}
 		}

@@ -9,11 +9,14 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 {
 	public class ServiceTypeValidationStep : IPipelineStep<ScheduleContext>
 	{
+		public bool CanContine { get; }
+
 		private PlanningCenter pco;
 
-		public ServiceTypeValidationStep(PlanningCenter pco) 
+		public ServiceTypeValidationStep(PlanningCenter pco, bool canContine) 
 		{
 			this.pco = pco;
+			CanContine = canContine;
 		}
 
 		public async Task<ValidationResult> ProcessAsync(ScheduleContext input)
