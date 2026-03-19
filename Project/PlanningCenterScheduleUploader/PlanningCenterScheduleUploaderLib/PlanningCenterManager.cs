@@ -28,6 +28,10 @@ namespace PlanningCenterScheduleUploaderLib
 				planningCenterScheduler = new PlanningCenterScheduler(scheduleContext);
 				//2.Do Checks on Data with Planning Centre.
 				await planningCenterScheduler.DoChecks();
+
+				if (scheduleContext.Errors.Any(e => e.ErrorLevel == ErrorLevel.Error))
+					return;
+
 				//3.Clear Plans for team on Planning Centre.
 				await planningCenterScheduler.ClearPlans();
 				//4.Submit assignments on Planning Centre.
