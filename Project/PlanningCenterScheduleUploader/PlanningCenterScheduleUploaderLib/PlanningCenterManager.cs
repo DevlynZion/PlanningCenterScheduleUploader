@@ -1,5 +1,5 @@
 ﻿using PlanningCenterScheduleUploaderLib.Process.Core.Interface;
-using PlanningCenterScheduleUploaderLib.Schedule.Core.Interface;
+using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 using PlanningCenterScheduleUploaderLib.Scheduler.Implementation;
 
 namespace PlanningCenterScheduleUploaderLib
@@ -8,7 +8,10 @@ namespace PlanningCenterScheduleUploaderLib
 	{
 		private ISourceProcessor sourceProcessor;
 		private PlanningCenterScheduler planningCenterScheduler;
-		private IScheduleModel scheduleModel;
+		private ScheduleContext scheduleContext;
+
+		public bool AnyErrors => scheduleContext != null ? scheduleContext.Errors.Any() : false;
+		public List<ScheduleErrors> Errors => scheduleContext != null ? scheduleContext.Errors : new List<ScheduleErrors>();
 
 		public PlanningCenterManager(ISourceProcessor sourceProcessor)
 		{
@@ -21,29 +24,24 @@ namespace PlanningCenterScheduleUploaderLib
 			try
 			{
 				//1.Input Excel with scheduling data.
-				scheduleModel = sourceProcessor.CreateScheduleModel();
-				planningCenterScheduler = new PlanningCenterScheduler(scheduleModel);
+				scheduleContext = sourceProcessor.CreateScheduleModel();
+				planningCenterScheduler = new PlanningCenterScheduler(scheduleContext);
 				//2.Do Checks on Data with Planning Centre.
 				await planningCenterScheduler.DoChecks();
+				if (scheduleContext.Errors.Any(e => e.ErrorLevel == ErrorLevel.Error))
+					return;
+
 				//3.Clear Plans for team on Planning Centre.
 				await planningCenterScheduler.ClearPlans();
-				//4.Check if person is not assigned already on another team.
-				//5.Mark in excel file all errors.
-				//6.Submit assignments on Planning Centre.
-			}
-			catch(ArgumentException ex)
-			{
-				throw;
+				//4.Submit assignments on Planning Centre.
+				await planningCenterScheduler.SubmitScheduling();
 			}
 			finally
 			{
-				sourceProcessor.ProcessErrors(scheduleModel);
+				//5.Mark in excel file all errors.
+				if (scheduleContext != null)
+					sourceProcessor.ProcessErrors(scheduleContext);
 			}
-		}
-
-		public List<string> GetErrorMessages()
-		{
-			return scheduleModel.Errors;
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 {
 	public class Services : CallBase, IServices
 	{
-		internal Services(RateLimiter rateLimiter) : base(rateLimiter) {}
+		internal Services(RateLimiter rateLimiter) : base(rateLimiter) { }
 
 		public async Task<GetServiceTypesResponse.Rootobject> GetServiceTypes()
 		{
@@ -73,6 +73,7 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 
 		public async Task<GetPlansResponse.Rootobject> GetPlans(string serviceTypeId)
 		{
+			// TODO: Search furture only
 			return await GetRequest<GetPlansResponse.Rootobject>($"/services/v2/service_types/{serviceTypeId}/plans");
 		}
 
@@ -89,6 +90,16 @@ namespace PlanningCenterAPI.Call.Implementation.Service
 		public async Task DeletePlanAssignments(string serviceTypeId, string planId, string planAssignmentId)
 		{
 			await DeleteRequest($"/services/v2/service_types/{serviceTypeId}/plans/{planId}/team_members/{planAssignmentId}");
+		}
+
+		public async Task<GetPersonsBlockoutDaysRespone.Rootobject> GetPersonsBlockoutDays(string personId)
+		{
+			return await GetRequest<GetPersonsBlockoutDaysRespone.Rootobject>($"/services/v2/people/{personId}/blockouts?filter=future");
+		}
+
+		public async Task<GetPersonsAssingmentsResponse.Rootobject> GetPersonsAssingments(string personId)
+		{
+			return await GetRequest<GetPersonsAssingmentsResponse.Rootobject>($"/services/v2/people/{personId}/plan_people");
 		}
 	}
 }
