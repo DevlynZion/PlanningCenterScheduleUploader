@@ -36,7 +36,8 @@ namespace PlanningCenterScheduleUploaderLib
 			finally
 			{
 				//5.Mark in excel file all errors.
-				sourceProcessor.ProcessErrors(scheduleContext);
+				if (scheduleContext != null)
+					sourceProcessor.ProcessErrors(scheduleContext);
 			}
 		}
 	}
