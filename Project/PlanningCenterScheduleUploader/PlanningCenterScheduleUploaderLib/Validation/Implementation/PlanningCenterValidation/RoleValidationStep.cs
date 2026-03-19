@@ -1,6 +1,7 @@
 ﻿using PlanningCenterAPI;
 using PlanningCenterScheduleUploaderLib.Pipeline.Core.Interface;
 using PlanningCenterScheduleUploaderLib.Pipeline.Implementation;
+using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 
 namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCenterValidation
@@ -31,10 +32,10 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 		private async Task<List<ScheduleErrors>> CheckRoles(PlanningCenter pco, ScheduleContext scheduleContext)
 		{
 			var errors = new List<ScheduleErrors>();
-
 			var roleIds = await GetRoles(pco, scheduleContext);
+            var rolesToRemove = new Dictionary<string, CellValue<string>>();
 
-			foreach (var role in scheduleContext.ScheduleRoles)
+            foreach (var role in scheduleContext.ScheduleRoles)
 			{
 				if (!roleIds.ContainsKey(role.Value.Value))
 				{
@@ -45,10 +46,14 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 						CellCoordinate = role.Value,
 						Message = message
 					});
-				}
+
+                    rolesToRemove.Add(role.Key, role.Value);
+                }
 			}
 
-			return errors;
+			RemoveMissingRoles(scheduleContext, rolesToRemove);
+
+            return errors;
 		}
 
 		private async Task<Dictionary<string, string>> GetRoles(PlanningCenter pco, ScheduleContext scheduleContext)
@@ -62,5 +67,18 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 
 			return scheduleContext.CachedManager.GetRoles();
 		}
-	}
+
+        private void RemoveMissingRoles(ScheduleContext scheduleContext, Dictionary<string, CellValue<string>> rolesToRemove)
+        {
+            foreach (var role in rolesToRemove)
+            {
+                var removeRoles = scheduleContext.Assignments.Where(a => a.Role == role.Value.Value);
+
+                while (removeRoles.Any())
+                    scheduleContext.Assignments.Remove(removeRoles.First());
+
+                scheduleContext.ScheduleRoles.Remove(role.Key);
+            }
+        }
+    }
 }
