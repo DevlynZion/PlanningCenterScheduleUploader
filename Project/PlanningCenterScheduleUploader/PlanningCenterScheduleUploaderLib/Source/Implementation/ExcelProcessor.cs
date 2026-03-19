@@ -165,6 +165,10 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 						else
 						{
 							var person = assignRow.Field<string>(role);
+
+							if (!rawScheduleRoleRow.ContainsKey(columnIndex))
+								continue; // Skipping because there is blank Role Header.
+
 							var roleName = rawScheduleRoleRow[columnIndex];
 
 							if (string.IsNullOrWhiteSpace(person))
