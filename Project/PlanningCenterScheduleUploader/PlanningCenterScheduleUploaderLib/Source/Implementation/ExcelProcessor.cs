@@ -109,7 +109,9 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 		private List<RawScheduleRow> LoadAssignmentsModel(DataTable schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow)
 		{
-			List<RawScheduleRow> rawScheduleRows = new List<RawScheduleRow>();
+            // TODO: This Phasing is making a lot of assumptions, we will look to refactor later.
+
+            List<RawScheduleRow> rawScheduleRows = new List<RawScheduleRow>();
 
 			var isFirstRow = true;
 			var dateColumnName = string.Empty;
