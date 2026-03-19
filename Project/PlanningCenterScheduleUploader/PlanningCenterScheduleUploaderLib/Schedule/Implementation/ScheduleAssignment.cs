@@ -4,13 +4,13 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 {
 	public class ScheduleAssignment
 	{
-		public DateTime Date { get; set; }
+		public DateOnly Date { get; set; }
 		public string Role { get; set; }
 		public CellValue<string> PersonName { get; set; }
 
 		public ScheduleAssignment()
 		{
-			Date = DateTime.Now;
+			Date = DateOnly.MinValue;
 			Role = string.Empty;
 			PersonName = new CellValue<string>();
 		}

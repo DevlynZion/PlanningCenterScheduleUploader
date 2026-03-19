@@ -6,14 +6,14 @@
 		public string TeamId { get; set; }
 
 		private Dictionary<string, string> personIds;
-		private Dictionary<DateTime, string> planIds;
+		private Dictionary<DateOnly, string> planIds;
 		private Dictionary<string, string> roleIds;
 
 		public bool AnyPersons() => personIds.Any();
 		public bool AnyPlans() => planIds.Any();
 		public bool AnyRoles() => roleIds.Any();
 		public Dictionary<string, string> GetPersons() => personIds;
-		public Dictionary<DateTime, string> GetPlans() => planIds;
+		public Dictionary<DateOnly, string> GetPlans() => planIds;
 		public Dictionary<string, string> GetRoles() => roleIds;
 
 		public ScheduleCachedManager() 
@@ -21,7 +21,7 @@
 			ServiceTypeId = string.Empty;
 			TeamId = string.Empty;
 			personIds = new Dictionary<string, string>();
-			planIds = new Dictionary<DateTime, string>();
+			planIds = new Dictionary<DateOnly, string>();
 			roleIds = new Dictionary<string, string>();
 		}
 
@@ -31,7 +31,7 @@
 				personIds.Add(name, id);
 		}
 
-		public void AddPlan(DateTime date, string id)
+		public void AddPlan(DateOnly date, string id)
 		{
 			if (!planIds.ContainsKey(date))
 				planIds.Add(date, id);
@@ -51,7 +51,7 @@
 				return string.Empty;
 		}
 
-		public string GetPlan(DateTime date)
+		public string GetPlan(DateOnly date)
 		{
 			if (planIds.ContainsKey(date))
 				return planIds[date];

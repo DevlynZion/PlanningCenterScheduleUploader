@@ -52,13 +52,13 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 			return errors;
 		}
 
-		private async Task<Dictionary<DateTime, string>> GetPlans(PlanningCenter pco, ScheduleContext scheduleContext)
+		private async Task<Dictionary<DateOnly, string>> GetPlans(PlanningCenter pco, ScheduleContext scheduleContext)
 		{
 			var results = await pco.Services.GetPlans(scheduleContext.CachedManager.ServiceTypeId);
 			do
 			{
 				foreach (var result in results.data)
-					scheduleContext.CachedManager.AddPlan(result.attributes.sort_date.Date, result.id);
+					scheduleContext.CachedManager.AddPlan(DateOnly.FromDateTime(result.attributes.sort_date), result.id);
 
 				results = await pco.Services.GetNextRequest<GetPlansResponse.Rootobject>(results.links);
 			} while (results != null);

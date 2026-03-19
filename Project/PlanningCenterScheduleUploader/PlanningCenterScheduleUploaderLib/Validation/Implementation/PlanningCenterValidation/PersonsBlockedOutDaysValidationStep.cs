@@ -84,8 +84,8 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 				{
 					foreach (var personBlockedOutDaysResult in personBlockedOutDaysResults.data)
 					{
-						var startDate = personBlockedOutDaysResult.attributes.starts_at;
-						var endDate = personBlockedOutDaysResult.attributes.ends_at;
+						var startDate = DateOnly.FromDateTime(personBlockedOutDaysResult.attributes.starts_at);
+						var endDate = DateOnly.FromDateTime(personBlockedOutDaysResult.attributes.ends_at);
 
 						if (!scheduleContext.PersonsBlockedDays.ContainsKey(person.Value))
 							scheduleContext.PersonsBlockedDays.Add(person.Value, new List<PersonBlockDays>());

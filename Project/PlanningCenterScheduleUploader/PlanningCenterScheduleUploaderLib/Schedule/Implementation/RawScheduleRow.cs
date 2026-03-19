@@ -4,13 +4,13 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 {
 	public class RawScheduleRow
 	{
-		public DateTime Date { get; set; }
+		public DateOnly Date { get; set; }
 		public string Role { get; set; }
 		public CellValue<string> PersonName { get; set; }
 
 		public RawScheduleRow()
 		{
-			Date = DateTime.MinValue;
+			Date = DateOnly.MinValue;
 			Role = string.Empty;
 			PersonName = new CellValue<string>();
 		}

@@ -4,7 +4,7 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 {
 	public class ScheduleContextFactory
 	{
-		public ScheduleContext Create(List<RawConfigRow> rawConfigRows, List<RawScheduleRow> rawScheduleRows, Dictionary<int, CellValue<string>> rawScheduleRoleRow, List<CellValue<DateTime>> rawScheduleDateRow)
+		public ScheduleContext Create(List<RawConfigRow> rawConfigRows, List<RawScheduleRow> rawScheduleRows, Dictionary<int, CellValue<string>> rawScheduleRoleRow, List<CellValue<DateOnly>> rawScheduleDateRow)
 		{
 			var scheduleContext = new ScheduleContext();
 
@@ -48,7 +48,7 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 			}
 		}
 
-		private void CreateScheduleDate(ScheduleContext scheduleContext, List<CellValue<DateTime>> rawScheduleDateRow)
+		private void CreateScheduleDate(ScheduleContext scheduleContext, List<CellValue<DateOnly>> rawScheduleDateRow)
 		{
 			foreach (var row in rawScheduleDateRow)
 				scheduleContext.ScheduleDates.Add(row);

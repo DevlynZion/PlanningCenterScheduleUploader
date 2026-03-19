@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelDataReader;
 using PlanningCenterScheduleUploaderLib.Process.Core.Interface;
 using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
@@ -35,7 +34,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 				var Schedule = result.Tables[ScheduleTabName];
 
 				var rawConfigRows = LoadConfig(Setup);
-				var rawScheduleRows = LoadAssignmentsModel(Schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateTime>> rawScheduleDateRow);
+				var rawScheduleRows = LoadAssignmentsModel(Schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow);
 
 				var ScheduleContextFactory = new ScheduleContextFactory();
 
@@ -45,6 +44,9 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 		public void ProcessErrors(ScheduleContext scheduleContext)
 		{
+			if(scheduleContext == null)
+				return;
+
 			using (var workbook = new XLWorkbook(excelFilePath))
 			{
 				foreach (var error in scheduleContext.Errors)
@@ -102,14 +104,14 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			return rawConfigRows;
 		}
 
-		private List<RawScheduleRow> LoadAssignmentsModel(DataTable schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateTime>> rawScheduleDateRow)
+		private List<RawScheduleRow> LoadAssignmentsModel(DataTable schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow)
 		{
 			List<RawScheduleRow> rawScheduleRows = new List<RawScheduleRow>();
 
 			var isFirstRow = true;
 			var dateColumnName = string.Empty;
 			rawScheduleRoleRow = new Dictionary<int, CellValue<string>>();
-			rawScheduleDateRow = new List<CellValue<DateTime>>();
+			rawScheduleDateRow = new List<CellValue<DateOnly>>();
 			foreach (DataRow assignRow in schedule.Rows)
 			{
 				var rowNumber = schedule.Rows.IndexOf(assignRow);
@@ -142,19 +144,19 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 				}
 				else
 				{
-					var date = DateTime.MinValue;
+					var date = DateOnly.MinValue;
 					foreach (DataColumn role in schedule.Columns)
 					{
 						var columnIndex = schedule.Columns.IndexOf(role);
 						if (role.ColumnName == dateColumnName)
 						{
-							date = assignRow.Field<DateTime>(role);
-							rawScheduleDateRow.Add(new CellValue<DateTime>()
+							date = DateOnly.FromDateTime(assignRow.Field<DateTime>(role));
+							rawScheduleDateRow.Add(new CellValue<DateOnly>()
 							{
 								TabName = ScheduleTabName,
 								RowNumber = rowNumber,
 								ColumnIndex = columnIndex,
-								Value = date.Date
+								Value = date
 							});
 						}
 						else
