@@ -10,8 +10,8 @@ namespace PlanningCenterScheduleUploaderLib
 		private PlanningCenterScheduler planningCenterScheduler;
 		private ScheduleContext scheduleContext;
 
-		public bool AnyErrors => scheduleContext.Errors.Any();
-		public List<ScheduleErrors> Errors => scheduleContext.Errors;
+		public bool AnyErrors => scheduleContext != null ? scheduleContext.Errors.Any() : false;
+		public List<ScheduleErrors> Errors => scheduleContext != null ? scheduleContext.Errors : new List<ScheduleErrors>();
 
 		public PlanningCenterManager(ISourceProcessor sourceProcessor)
 		{
