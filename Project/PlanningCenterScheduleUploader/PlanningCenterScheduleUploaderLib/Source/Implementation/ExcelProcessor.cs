@@ -51,6 +51,9 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			{
 				foreach (var error in scheduleContext.Errors)
 				{
+					if (error.CellCoordinate == null)
+						continue;
+
 					var worksheet = workbook.Worksheet(error.CellCoordinate.TabName);
 
 					var changeColourTo = error.ErrorLevel switch
