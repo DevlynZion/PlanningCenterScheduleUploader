@@ -2,6 +2,7 @@
 using PlanningCenterAPI.Respone.Constant;
 using PlanningCenterScheduleUploaderLib.Pipeline.Core.Interface;
 using PlanningCenterScheduleUploaderLib.Pipeline.Implementation;
+using PlanningCenterScheduleUploaderLib.Schedule.Core.Record;
 using PlanningCenterScheduleUploaderLib.Schedule.Implementation;
 using PlanningCenterScheduleUploaderLib.Scheduler.Core.Constant;
 
@@ -32,8 +33,8 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 		private async Task<List<ScheduleErrors>> CheckPlans(PlanningCenter pco, ScheduleContext scheduleContext)
 		{
 			var errors = new List<ScheduleErrors>();
-
 			var planIds = await GetPlans(pco, scheduleContext);
+			var plansToRemove = new List<CellValue<DateOnly>>();
 
 			foreach (var plan in scheduleContext.ScheduleDates)
 			{
@@ -46,10 +47,13 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 						CellCoordinate = plan,
 						Message = message
 					});
-				}
+					plansToRemove.Add(plan);
+                }
 			}
 
-			return errors;
+			RemoveMissingPlans(scheduleContext, plansToRemove);
+
+            return errors;
 		}
 
 		private async Task<Dictionary<DateOnly, string>> GetPlans(PlanningCenter pco, ScheduleContext scheduleContext)
@@ -65,5 +69,18 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 
 			return scheduleContext.CachedManager.GetPlans();
 		}
+
+		private void RemoveMissingPlans(ScheduleContext scheduleContext, List<CellValue<DateOnly>> plansToRemove)
+		{
+			foreach (var plan in plansToRemove)
+			{
+				var removePlans = scheduleContext.Assignments.Where(a => a.Date == plan.Value);
+
+                while(removePlans.Any())
+                    scheduleContext.Assignments.Remove(removePlans.First());
+
+				scheduleContext.ScheduleDates.Remove(plan);
+            }
+        }
 	}
 }

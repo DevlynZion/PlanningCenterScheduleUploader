@@ -37,10 +37,11 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 			{
 				foreach (var plan in scheduleContext.ScheduleDates)
 				{
-					var results = await pco.Services.GetPlanAssignments(scheduleContext.CachedManager.ServiceTypeId, scheduleContext.CachedManager.GetPlan(plan.Value), scheduleContext.CachedManager.TeamId);
+                    var planId = scheduleContext.CachedManager.GetPlan(plan.Value);
+                    var results = await pco.Services.GetPlanAssignments(scheduleContext.CachedManager.ServiceTypeId, planId, scheduleContext.CachedManager.TeamId);
 
 					foreach (var result in results.data)
-						await pco.Services.DeletePlanAssignments(scheduleContext.CachedManager.ServiceTypeId, scheduleContext.CachedManager.GetPlan(plan.Value), result.id);
+						await pco.Services.DeletePlanAssignments(scheduleContext.CachedManager.ServiceTypeId, planId, result.id);
 				}
 			}
 		}
