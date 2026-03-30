@@ -35,9 +35,10 @@
             // 
             // btnFile
             // 
+            btnFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnFile.Location = new Point(12, 12);
             btnFile.Name = "btnFile";
-            btnFile.Size = new Size(75, 23);
+            btnFile.Size = new Size(481, 23);
             btnFile.TabIndex = 0;
             btnFile.Text = "Set File";
             btnFile.UseVisualStyleBackColor = true;
@@ -45,10 +46,11 @@
             // 
             // btnUpload
             // 
+            btnUpload.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnUpload.Enabled = false;
             btnUpload.Location = new Point(12, 41);
             btnUpload.Name = "btnUpload";
-            btnUpload.Size = new Size(75, 23);
+            btnUpload.Size = new Size(481, 23);
             btnUpload.TabIndex = 1;
             btnUpload.Text = "Upload";
             btnUpload.UseVisualStyleBackColor = true;
@@ -61,17 +63,18 @@
             lstBxError.ItemHeight = 15;
             lstBxError.Location = new Point(12, 70);
             lstBxError.Name = "lstBxError";
-            lstBxError.Size = new Size(440, 94);
+            lstBxError.Size = new Size(481, 184);
             lstBxError.TabIndex = 2;
             // 
             // UploadSchedule
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(463, 181);
+            ClientSize = new Size(504, 261);
             Controls.Add(lstBxError);
             Controls.Add(btnUpload);
             Controls.Add(btnFile);
+            MinimumSize = new Size(520, 300);
             Name = "UploadSchedule";
             Text = "Upload Schedule";
             ResumeLayout(false);
