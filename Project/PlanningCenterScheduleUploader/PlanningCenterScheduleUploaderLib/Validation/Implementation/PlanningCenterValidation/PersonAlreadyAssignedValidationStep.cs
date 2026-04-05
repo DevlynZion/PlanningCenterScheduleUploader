@@ -34,7 +34,9 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 
 			await GetPersonAssingments(pco, scheduleContext);
 
-			foreach(var assignment in scheduleContext.Assignments)
+            var removeAssignments = new List<ScheduleAssignment>();
+
+            foreach (var assignment in scheduleContext.Assignments)
 			{
 				var personName = assignment.PersonName.Value;
 				var personId = scheduleContext.CachedManager.GetPerson(personName);
@@ -52,10 +54,15 @@ namespace PlanningCenterScheduleUploaderLib.Validation.Implementation.PlanningCe
 						CellCoordinate = assignment.PersonName,
 						Message = message
 					});
-				}
+
+                    removeAssignments.Add(assignment);
+                }
 			}
 
-			return errors;
+            foreach (var assignment in removeAssignments)
+                scheduleContext.Assignments.Remove(assignment);
+
+            return errors;
 		}
 
 		private static async Task GetPersonAssingments(PlanningCenter pco, ScheduleContext scheduleContext)

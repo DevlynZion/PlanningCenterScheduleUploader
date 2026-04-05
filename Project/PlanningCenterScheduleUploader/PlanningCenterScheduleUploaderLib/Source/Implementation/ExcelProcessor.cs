@@ -67,7 +67,12 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 					worksheet.Cell(error.CellCoordinate.RowNumber + 1, error.CellCoordinate.ColumnIndex + 1).Style.Fill.BackgroundColor = changeColourTo;
 				}
-				workbook.SaveAs(excelFilePath + ErrorCopy);
+
+                var fileName = Path.GetFileNameWithoutExtension(excelFilePath);
+				var fileExtension = Path.GetExtension(excelFilePath);
+				var newExcelFilePath = Directory.GetCurrentDirectory() + "\\" + fileName.Replace(fileName, fileName + ErrorCopy) + fileExtension;
+
+                workbook.SaveAs(newExcelFilePath);
             }
 		}
 
