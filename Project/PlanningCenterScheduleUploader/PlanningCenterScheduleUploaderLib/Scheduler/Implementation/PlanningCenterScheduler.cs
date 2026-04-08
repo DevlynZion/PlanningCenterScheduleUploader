@@ -20,7 +20,7 @@ namespace PlanningCenterScheduleUploaderLib.Scheduler.Implementation
 
 		public async Task DoChecks()
 		{
-			using (PlanningCenter pco = new PlanningCenter(false, true))
+			using (PlanningCenter pco = new PlanningCenter())
 			{
 				var scheduleContextPipeline = CreateScheduleContextPipeline(pco);
 
