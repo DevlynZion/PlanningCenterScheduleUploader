@@ -44,6 +44,7 @@ namespace PlanningCenterScheduleUploader
             catch (Exception ex)
             {
                 WriteLine(ex.ToString());
+                WriteLine(ex.StackTrace?.ToString());
             }
             finally
             {

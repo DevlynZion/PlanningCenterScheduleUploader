@@ -131,7 +131,7 @@
 		{
 			public string name { get; set; }
 			public object[] negative_tag_groups { get; set; }
-			public int sequence { get; set; }
+			public int? sequence { get; set; }
 			public object[] tag_groups { get; set; }
 			public object[] tags { get; set; }
 		}
