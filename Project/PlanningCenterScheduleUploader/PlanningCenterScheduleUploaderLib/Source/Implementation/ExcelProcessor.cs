@@ -13,9 +13,10 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 		private const string ScheduleTabName = "Schedule";
 		private const string DateColumnName = "date";
 		private const int ConfigKeyColumnIndex = 0;
-		private const int ConfigValueColumnIndex = 1;
+        private const int ConfigValueColumnIndex = 1;
+        private const string ErrorCopy = " (Errors)";
 
-		private string excelFilePath;
+        private string excelFilePath;
 
 		public ExcelProcessor(string excelFilePath)
 		{
@@ -44,7 +45,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 		public void ProcessErrors(ScheduleContext scheduleContext)
 		{
-			if(scheduleContext == null)
+			if(scheduleContext == null || !scheduleContext.Errors.Any())
 				return;
 
 			using (var workbook = new XLWorkbook(excelFilePath))
@@ -66,8 +67,13 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 					worksheet.Cell(error.CellCoordinate.RowNumber + 1, error.CellCoordinate.ColumnIndex + 1).Style.Fill.BackgroundColor = changeColourTo;
 				}
-				workbook.Save();
-			}
+
+                var fileName = Path.GetFileNameWithoutExtension(excelFilePath);
+				var fileExtension = Path.GetExtension(excelFilePath);
+				var newExcelFilePath = Directory.GetCurrentDirectory() + "\\" + fileName.Replace(fileName, fileName + ErrorCopy) + fileExtension;
+
+                workbook.SaveAs(newExcelFilePath);
+            }
 		}
 
 		private List<RawConfigRow> LoadConfig(DataTable setup)

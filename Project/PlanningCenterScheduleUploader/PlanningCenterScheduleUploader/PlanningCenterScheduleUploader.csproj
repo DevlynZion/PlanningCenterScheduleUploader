@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PlanningCenterAPI\PlanningCenterAPI.csproj" />
+    <ProjectReference Include="..\PlanningCenterScheduleUploaderLib\PlanningCenterScheduleUploaderLib.csproj" />
   </ItemGroup>
 
 </Project>
