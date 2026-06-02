@@ -18,7 +18,6 @@ namespace PlanningCenterScheduleUploaderLib
 			this.sourceProcessor = sourceProcessor;
 		}
 
-
 		public async Task Start()
 		{
 			try

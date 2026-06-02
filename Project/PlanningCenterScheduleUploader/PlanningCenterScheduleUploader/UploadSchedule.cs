@@ -7,6 +7,7 @@ namespace PlanningCenterScheduleUploader
 	public partial class UploadSchedule : Form
 	{
         private string scheduleFilename;
+        private bool isUploading;
 
 		public UploadSchedule()
 		{
@@ -28,6 +29,12 @@ namespace PlanningCenterScheduleUploader
 
         private void btnUpload_Click(object sender, EventArgs e)
         {
+            if (isUploading)
+                return;
+
+            isUploading = true;
+            btnUpload.Enabled = false;
+
             Process();
         }
 
@@ -55,6 +62,8 @@ namespace PlanningCenterScheduleUploader
                     foreach (var error in planningCenterManager.Errors)
                         WriteLine($"{error.ErrorLevel.ToString()} - [{error.CellCoordinate.TabName}, {error.CellCoordinate.RowNumber + 1}, {error.CellCoordinate.ColumnIndex + 1}] {error.Message}");
                 }
+                btnUpload.Enabled = true;
+                isUploading = false;
             }
         }
 
