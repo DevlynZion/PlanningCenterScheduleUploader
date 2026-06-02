@@ -45,7 +45,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 		public void ProcessErrors(ScheduleContext scheduleContext)
 		{
-			if(scheduleContext == null)
+			if(scheduleContext == null || !scheduleContext.Errors.Any())
 				return;
 
 			using (var workbook = new XLWorkbook(excelFilePath))
