@@ -18,7 +18,7 @@ namespace PlanningCenterScheduleUploader
             btnUpload = new Button();
             lstBxError = new ListBox();
             btnCopyLogs = new Button();
-            lnkUpdate = new LinkLabel();
+            btnUpdate = new Button();
             SuspendLayout();
 
             // btnFile
@@ -72,23 +72,25 @@ namespace PlanningCenterScheduleUploader
             btnCopyLogs.UseVisualStyleBackColor = true;
             btnCopyLogs.Click += btnCopyLogs_Click;
 
-            // lnkUpdate
-            lnkUpdate.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lnkUpdate.AutoSize = false;
-            lnkUpdate.Location = new Point(12, 284);
-            lnkUpdate.Name = "lnkUpdate";
-            lnkUpdate.Size = new Size(481, 15);
-            lnkUpdate.TabIndex = 5;
-            lnkUpdate.TabStop = true;
-            lnkUpdate.Text = string.Empty;
-            lnkUpdate.Visible = false;
-            lnkUpdate.LinkClicked += lnkUpdate_LinkClicked;
+            // btnUpdate
+            btnUpdate.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btnUpdate.BackColor = Color.FromArgb(204, 82, 0);
+            btnUpdate.FlatStyle = FlatStyle.Flat;
+            btnUpdate.ForeColor = Color.White;
+            btnUpdate.Location = new Point(12, 284);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(481, 23);
+            btnUpdate.TabIndex = 5;
+            btnUpdate.Text = "Update Available — Click to Download";
+            btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Visible = false;
+            btnUpdate.Click += btnUpdate_Click;
 
             // UploadSchedule
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(504, 307);
-            Controls.Add(lnkUpdate);
+            Controls.Add(btnUpdate);
             Controls.Add(btnCopyLogs);
             Controls.Add(lstBxError);
             Controls.Add(btnUpload);
@@ -106,6 +108,6 @@ namespace PlanningCenterScheduleUploader
         private Button btnUpload;
         private ListBox lstBxError;
         private Button btnCopyLogs;
-        private LinkLabel lnkUpdate;
+        private Button btnUpdate;
     }
 }

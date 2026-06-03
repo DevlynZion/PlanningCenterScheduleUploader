@@ -8,6 +8,7 @@ namespace PlanningCenterScheduleUploader
     {
         private string scheduleFilename = string.Empty;
         private bool isUploading;
+        private string _updateUrl = string.Empty;
 
         public UploadSchedule()
         {
@@ -110,19 +111,16 @@ namespace PlanningCenterScheduleUploader
             }
         }
 
-        private void lnkUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (e.Link?.LinkData is not string url)
-                return;
-
             try
             {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(_updateUrl) { UseShellExecute = true });
             }
             catch
             {
                 MessageBox.Show(
-                    $"Could not open the browser. Please visit the releases page manually:\n{url}",
+                    $"Could not open the browser. Please visit the releases page manually:\n{_updateUrl}",
                     "Update",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -135,10 +133,14 @@ namespace PlanningCenterScheduleUploader
             if (!result.HasUpdate)
                 return;
 
-            lnkUpdate.Text = $"Update available: {result.LatestTag} — click to download";
-            lnkUpdate.Links.Clear();
-            lnkUpdate.Links.Add(0, lnkUpdate.Text.Length, result.ReleaseUrl);
-            lnkUpdate.Visible = true;
+            _updateUrl = result.ReleaseUrl;
+            btnUpdate.Text = $"Update Available: {result.LatestTag} — Click to Download";
+            btnUpdate.Visible = true;
+
+            btnFile.Enabled = false;
+            btnSettings.Enabled = false;
+            btnUpload.Enabled = false;
+            btnCopyLogs.Enabled = false;
         }
 
         private void WriteLine(string s)
