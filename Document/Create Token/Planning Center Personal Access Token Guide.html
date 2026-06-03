@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>How to Create a Planning Center Personal Access Token</title>
+	<meta name="generator" content="LibreOffice 26.2.3.2 (Windows)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="2026-06-03T15:29:26.176825800"/>
+	<meta name="" content=""/>
+	<meta name="created" content="00:00:00">
+	<meta name="created" content="00:00:00">
+	<meta name="created" content="00:00:00">
+	<style type="text/css">
+		td p { color: #1a1a1a; font-family: "Calibri", "Arial", sans-serif; line-height: 150%; font-size: 11pt; margin-left: 0.16cm; margin-right: 0.16cm; margin-top: 0.16cm; margin-bottom: 0.16cm }
+		h1 { color: #cc5200; margin-right: 2cm; line-height: 150%; margin-left: 2cm; border-top: none; border-bottom: 1.50pt solid #cc5200; border-left: none; border-right: none; padding-top: 0cm; padding-bottom: 0.16cm; padding-left: 0cm; padding-right: 0cm }
+		h1.western { font-size: 20pt }
+		h1.cjk { font-size: 20pt; font-family: "Calibri", "Arial", sans-serif }
+		h1.ctl { font-family: "Calibri", "Arial", sans-serif; font-size: 20pt }
+		p { color: #1a1a1a; font-family: "Calibri", "Arial", sans-serif; line-height: 150%; font-size: 11pt; margin-left: 0.16cm; margin-right: 0.16cm; margin-top: 0.16cm; margin-bottom: 0.16cm }
+		h2 { color: #cc5200; font-size: 13pt; margin-right: 2cm; line-height: 150%; margin-left: 2cm; margin-top: 0.74cm; margin-bottom: 0.16cm; border-top: none; border-bottom: none; border-left: 3.00pt solid #cc5200; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.26cm; padding-right: 0cm }
+		p.subtitle { color: #666666; font-family: "Calibri", "Arial", sans-serif; font-size: 10pt; margin-bottom: 0.64cm }
+		p.step-heading { font-weight: bold; font-family: "Calibri", "Arial", sans-serif; font-size: 12pt; margin-top: 0.53cm }
+	</style>
+</head>
+<body lang="en-ZA" text="#1a1a1a" dir="ltr"><h1 class="western">How
+to Create a Planning Center Personal Access Token</h1>
+<p class="subtitle">A step-by-step guide for setting up the Schedule
+Uploader app — Planning Center Schedule Uploader v0.1.0</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5" bgcolor="#3355cc" style="background: #3355cc; border: none; padding: 0cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			&nbsp;</p>
+		</td>
+		<td bgcolor="#f0f4ff" style="background: #f0f4ff; border: 1px solid #b0bfff; padding: 0.26cm 0.37cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<font size="2" style="font-size: 10pt"><b>What is a Personal
+			Access Token?</b><br/>
+A Personal Access Token is a set of
+			credentials that allows the Schedule Uploader app to connect to
+			your Planning Center account on your behalf. It is similar to a
+			username and password for the app. You only need to create this
+			once, and you can revoke it at any time from your Planning Center
+			account. </font>
+			</p>
+		</td>
+	</tr>
+</table>
+<h2>Part 1 — Create the Token in Planning Center</h2>
+<p class="step-heading">Step 1 — Log into Planning Center</p>
+<p style="margin-left: 0cm; margin-right: 0cm">Open your browser and
+go to <span style="display: inline-block; border: none; padding: 0cm"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt"><span style="background: #f0f0f0">https://www.planningcenteronline.com</span></font></font></span>
+and sign in with your normal Planning Center username and password.</p>
+<table width="100%" cellpadding="16" cellspacing="0">
+	<col width="256*"/>
+	<tr>
+		<td width="100%" height="96" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_6280d87a.gif" name="Image1" align="left" width="1241" height="668" border="0"/>
+<br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 2 — Open the Developer Tokens page</p>
+<p>Once logged in, go directly to this address in your browser:</p>
+<p style="margin-left: 0cm; margin-right: 0cm"><span style="display: inline-block; border: none; padding: 0cm"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt"><span style="background: #f0f0f0">https://api.planningcenteronline.com/oauth/applications</span></font></font></span></p>
+<p>This is the page where Personal Access Tokens are managed. Click
+on <b>Personal Access Tokens.</b></p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_fc3366c.gif" name="Image2" align="left" width="1839" height="435" border="0">
+  <br clear="left"/>
+</img>
+<br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 3 — Click “New Personal Access
+Token”</p>
+<p>Click the <b>New Personal Access Token</b> button near the top of
+the page.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_b58633e7.gif" name="Image3" align="left" width="1841" height="396" border="0"/>
+<br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 4 — Name your token</p>
+<p>Enter a name that describes what this token is for. We recommend:</p>
+<p><b>Schedule Uploader</b></p>
+<p>This name is just for your reference so you can identify it later
+if you need to revoke it.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<font color="#888888"><font size="2" style="font-size: 10pt"><i>[<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_573a388d.gif" name="Image4" align="left" width="1304" height="423" border="0"/>
+
+			<br clear="left"/>
+SCREENSHOT: Token name field filled in with
+			“Schedule Uploader”] </i></font></font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 5 — Set API permissions — <font color="#cc5200">Important</font></p>
+<p>Below the name field you will see a list of Planning Center apps.
+You must enable access for the apps listed below and set each one to
+the <b>latest version available</b> in the dropdown.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5" bgcolor="#ffc107" style="background: #ffc107; border: none; padding: 0cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			&nbsp;</p>
+		</td>
+		<td bgcolor="#fff8e1" style="background: #fff8e1; border: 1px solid #ffe082; padding: 0.26cm 0.37cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<font size="2" style="font-size: 10pt"><b>Important:</b> Each app
+			has a version dropdown. Always select the <b>most recent date</b>
+			shown in the list. Using an older version may cause the app to
+			stop working when Planning Center retires that version. </font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p>Enable the following apps and set each to the latest version:</p>
+<table width="100%" cellpadding="6" cellspacing="0">
+	<tr bgcolor="#cc5200" style="background: #cc5200">
+		<td style="border: 1px solid #cc5200; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<b>App</b></p>
+		</td>
+		<td style="border: 1px solid #cc5200; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<b>Required?</b></p>
+		</td>
+		<td style="border: 1px solid #cc5200; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<b>Version to select</b></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: 1px solid #dddddd; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<b>Services</b></p>
+		</td>
+		<td style="border: 1px solid #dddddd; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			Yes — required</p>
+		</td>
+		<td style="border: 1px solid #dddddd; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			Select the most recent date in the dropdown</p>
+		</td>
+	</tr>
+	<tr bgcolor="#fafafa" style="background: #fafafa">
+		<td style="border: 1px solid #dddddd; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<b>People</b></p>
+		</td>
+		<td style="border: 1px solid #dddddd; padding: 0.21cm 0.26cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			Yes — required</p>
+		</td>
+		<td style="border: 1px solid #dddddd; padding: 0.21cm 0.26cm"><p>Select
+			the most recent date in the dropdown</p>
+		</td>
+	</tr>
+</table>
+<p>Leave all other apps disabled unless instructed otherwise.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="845" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<font color="#888888"><font size="2" style="font-size: 10pt"><i>[<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_3b353934.gif" name="Image5" align="left" width="1348" height="775" border="0"/>
+
+			<br clear="left"/>
+SCREENSHOT: API permissions list showing
+			Services and People enabled, with version dropdowns visible] </i></font></font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 6 — Create the token</p>
+<p>Once you have set the permissions, click the <b>Submit</b> button
+at the bottom of the form.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<font color="#888888"><font size="2" style="font-size: 10pt"><i>[<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_e31aab72.gif" name="Image6" align="left" width="1004" height="480" border="0"/>
+
+			<br clear="left"/>
+SCREENSHOT: The Create button at the bottom of
+			the form] </i></font></font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 7 — Copy your credentials</p>
+<p>After clicking Create, Planning Center will show you two pieces of
+information:</p>
+<ul>
+	<li><p style="margin-right: 0cm; margin-bottom: 0cm"><b>Client</b>
+	<b>ID</b> — a long string of letters and numbers 
+	</p></li>
+	<li><p><b>Secret</b> — another long string of letters and numbers 
+	</p></li>
+</ul>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5" bgcolor="#ffc107" style="background: #ffc107; border: none; padding: 0cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			&nbsp;</p>
+		</td>
+		<td bgcolor="#fff8e1" style="background: #fff8e1; border: 1px solid #ffe082; padding: 0.26cm 0.37cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<font size="2" style="font-size: 10pt"><b>Save these now.</b> The
+			Secret is only shown once. If you close this page without copying
+			it, you will need to delete this token and create a new one. </font>
+			</p>
+		</td>
+	</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5" bgcolor="#43a047" style="background: #43a047; border: none; padding: 0cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			&nbsp;</p>
+		</td>
+		<td bgcolor="#e8f5e9" style="background: #e8f5e9; border: 1px solid #a5d6a7; padding: 0.26cm 0.37cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<font size="2" style="font-size: 10pt"><b>Tip:</b> Copy both
+			values and paste them temporarily into a Notepad document while
+			you set up the app. Delete the Notepad file afterwards. </font>
+			</p>
+		</td>
+	</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<font color="#888888"><font size="2" style="font-size: 10pt"><i>[<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_d9586d58.gif" name="Image7" align="left" width="736" height="506" border="0"/>
+
+			<br clear="left"/>
+SCREENSHOT: The credentials page showing the
+			Application ID and Secret fields after the token has been created]
+			</i></font></font>
+			</p>
+		</td>
+	</tr>
+</table>
+<h2 style="margin-left: 0cm; margin-right: 0cm; page-break-before: always">
+Part 2 — Enter the Credentials in the Schedule Uploader App</h2>
+<p class="step-heading">Step 8 — Open the Schedule Uploader app</p>
+<p>Double-click <b>PlanningCenterScheduleUploader.exe</b> to open the
+app.</p>
+<table width="100%" cellpadding="10" cellspacing="0">
+	<col width="1*"/>
+	<col width="255*"/>
+	<tr>
+		<td bgcolor="#ffc107" style="background: #ffc107; border: none; padding: 0cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			&nbsp;</p>
+		</td>
+		<td width="100%" bgcolor="#fff8e1" style="background: #fff8e1; border: 1px solid #ffe082; padding: 0.26cm 0.37cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<font size="2" style="font-size: 10pt"><b>Windows SmartScreen
+			warning:</b> If Windows shows a message saying “Windows
+			protected your PC”, this is normal for apps that are not yet
+			code-signed. Click <b>More info</b> and then click <b>Run anyway</b>
+			to continue. </font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 9 — Open Settings</p>
+<p>When the app opens for the first time, it will automatically ask
+you to enter your credentials. If it does not, click the <b>Settings</b>
+button in the top-right corner of the app.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<font color="#888888"><font size="2" style="font-size: 10pt"><i>[<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_4f4d8364.gif" name="Image8" align="left" width="513" height="346" border="0"/>
+
+			<br clear="left"/>
+SCREENSHOT: Schedule Uploader main window with
+			the Settings button highlighted] </i></font></font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 10 — Enter your credentials</p>
+<p>In the Settings dialog:</p>
+<ol>
+	<li><p style="margin-right: 0cm; margin-bottom: 0cm">Paste your
+	<b>Client</b> <b>ID</b> into the <b>Application ID</b> field 
+	</p></li>
+	<li><p style="margin-right: 0cm; margin-bottom: 0cm">Paste your
+	<b>Secret</b> into the Secret field 
+	</p></li>
+	<li><p>Click <b>Save</b> 
+	</p></li>
+</ol>
+<p>Your credentials are stored securely on your computer and are
+never sent anywhere other than to Planning Center when the app runs.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="130" bgcolor="#f7f7f7" style="background: #f7f7f7; border: 1.50pt dashed #aaaaaa; padding: 0.42cm"><p align="center" style="margin-left: 0cm; margin-right: 0cm">
+			<font color="#888888"><font size="2" style="font-size: 10pt"><i>[<img src="Planning%20Center%20Personal%20Access%20Token%20Guide_html_9e272cfc.gif" name="Image9" align="left" width="405" height="264" border="0"/>
+
+			<br clear="left"/>
+SCREENSHOT: Settings dialog with Application ID
+			and Secret fields filled in, Save button visible] </i></font></font>
+			</p>
+		</td>
+	</tr>
+</table>
+<p class="step-heading">Step 11 — You are ready</p>
+<p>The app is now connected to your Planning Center account. You can
+close the Settings dialog and begin uploading schedules.</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5" bgcolor="#43a047" style="background: #43a047; border: none; padding: 0cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			&nbsp;</p>
+		</td>
+		<td bgcolor="#e8f5e9" style="background: #e8f5e9; border: 1px solid #a5d6a7; padding: 0.26cm 0.37cm"><p style="margin-left: 0cm; margin-right: 0cm">
+			<font size="2" style="font-size: 10pt"><b>Need help?</b> If you
+			see an error after entering your credentials, double-check that
+			you copied the full Application ID and Secret without any extra
+			spaces. If the problem continues, contact your administrator. </font>
+			</p>
+		</td>
+	</tr>
+</table>
+<h2>Revoking the Token (if needed)</h2>
+<p>If you need to revoke access or create a new token (for example,
+if your credentials were accidentally shared), go back to:</p>
+<p style="margin-left: 0cm; margin-right: 0cm"><span style="display: inline-block; border: none; padding: 0cm"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt"><span style="background: #f0f0f0">https://api.planningcenteronline.com/oauth/applications</span></font></font></span></p>
+<p>Find the <b>Schedule Uploader</b> token in the list and click
+<b>Delete</b>. Then follow this guide from Step 3 to create a new
+one.</p>
+</body>
+</html>
