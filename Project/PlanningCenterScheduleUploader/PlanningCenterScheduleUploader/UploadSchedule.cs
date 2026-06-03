@@ -45,7 +45,7 @@ namespace PlanningCenterScheduleUploader
             form.ShowDialog(this);
         }
 
-        private void btnUpload_Click(object sender, EventArgs e)
+        private async void btnUpload_Click(object sender, EventArgs e)
         {
             if (isUploading)
                 return;
@@ -53,7 +53,7 @@ namespace PlanningCenterScheduleUploader
             isUploading = true;
             btnUpload.Enabled = false;
 
-            _ = RunUpload();
+            await RunUpload();
         }
 
         private async Task RunUpload()
@@ -95,14 +95,38 @@ namespace PlanningCenterScheduleUploader
 
         private void btnCopyLogs_Click(object sender, EventArgs e)
         {
-            var text = string.Join(Environment.NewLine, lstBxError.Items.Cast<string>());
-            Clipboard.SetText(text);
+            try
+            {
+                var text = string.Join(Environment.NewLine, lstBxError.Items.Cast<string>());
+                Clipboard.SetText(text);
+            }
+            catch
+            {
+                MessageBox.Show(
+                    "Could not copy the log to the clipboard. Please try again, or select the log entries manually.",
+                    "Copy Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
         }
 
         private void lnkUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (e.Link?.LinkData is string url)
+            if (e.Link?.LinkData is not string url)
+                return;
+
+            try
+            {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch
+            {
+                MessageBox.Show(
+                    $"Could not open the browser. Please visit the releases page manually:\n{url}",
+                    "Update",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
         }
 
         private async Task CheckForUpdatesAsync()

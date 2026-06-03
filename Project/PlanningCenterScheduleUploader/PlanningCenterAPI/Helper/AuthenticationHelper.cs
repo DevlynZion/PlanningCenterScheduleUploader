@@ -1,7 +1,11 @@
+using System.Runtime.Versioning;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace PlanningCenterAPI.Helper
 {
+    [SupportedOSPlatform("windows")]
     public static class AuthenticationHelper
     {
         private static readonly string CredentialsPath = Path.Combine(
@@ -25,8 +29,19 @@ namespace PlanningCenterAPI.Helper
         public static void SaveCredentials(string appId, string secret)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(CredentialsPath)!);
-            var json = JsonSerializer.Serialize(new Credentials { AppId = appId, Secret = secret });
-            File.WriteAllText(CredentialsPath, json);
+
+            var encryptedSecret = ProtectedData.Protect(
+                Encoding.UTF8.GetBytes(secret),
+                null,
+                DataProtectionScope.CurrentUser);
+
+            var stored = new StoredCredentials
+            {
+                AppId = appId,
+                EncryptedSecret = Convert.ToBase64String(encryptedSecret)
+            };
+
+            File.WriteAllText(CredentialsPath, JsonSerializer.Serialize(stored));
         }
 
         public static bool CredentialsExist()
@@ -43,12 +58,42 @@ namespace PlanningCenterAPI.Helper
             try
             {
                 var json = File.ReadAllText(CredentialsPath);
-                return JsonSerializer.Deserialize<Credentials>(json);
+                var stored = JsonSerializer.Deserialize<StoredCredentials>(json);
+                if (stored is null) return null;
+
+                string secret;
+
+                if (stored.EncryptedSecret is not null)
+                {
+                    var encrypted = Convert.FromBase64String(stored.EncryptedSecret);
+                    secret = Encoding.UTF8.GetString(
+                        ProtectedData.Unprotect(encrypted, null, DataProtectionScope.CurrentUser));
+                }
+                else if (stored.Secret is not null)
+                {
+                    // Legacy plaintext file — migrate to encrypted format immediately
+                    secret = stored.Secret;
+                    SaveCredentials(stored.AppId, secret);
+                }
+                else
+                {
+                    return null;
+                }
+
+                return new Credentials { AppId = stored.AppId, Secret = secret };
             }
             catch
             {
                 return null;
             }
+        }
+
+        // Disk format — Secret is nullable for legacy migration only
+        private class StoredCredentials
+        {
+            public string AppId { get; set; } = string.Empty;
+            public string? Secret { get; set; }
+            public string? EncryptedSecret { get; set; }
         }
 
         private class Credentials
