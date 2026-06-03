@@ -22,13 +22,15 @@ namespace PlanningCenterScheduleUploader
                 if (release is null || string.IsNullOrWhiteSpace(release.TagName))
                     return new UpdateResult(false, string.Empty, string.Empty);
 
-                if (!Uri.TryCreate(release.HtmlUrl, UriKind.Absolute, out _))
+                if (!Uri.TryCreate(release.HtmlUrl, UriKind.Absolute, out var releaseUri)
+                    || releaseUri.Scheme != Uri.UriSchemeHttps
+                    || releaseUri.Host != "github.com")
                     return new UpdateResult(false, string.Empty, string.Empty);
 
                 var currentVersion = GetCurrentVersion();
                 var hasUpdate = !string.Equals(release.TagName, currentVersion, StringComparison.OrdinalIgnoreCase);
 
-                return new UpdateResult(hasUpdate, release.TagName, release.HtmlUrl!);
+                return new UpdateResult(hasUpdate, release.TagName, releaseUri.AbsoluteUri);
             }
             catch
             {
