@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout
@@ -30,6 +30,25 @@ jobs:
             -p:PublishSingleFile=true `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -o ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PlanningCenterScheduleUploader
+          path: ./publish/PlanningCenterScheduleUploader.exe
+
+  release:
+    runs-on: windows-latest
+    needs: build
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: PlanningCenterScheduleUploader
+          path: ./publish
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
