@@ -12,7 +12,7 @@ namespace PlanningCenterScheduleUploaderLib.Schedule.Implementation
 	public class ScheduleErrors
 	{
 		public ErrorLevel ErrorLevel { get; set; }
-		public ICellCoordinate CellCoordinate { get; set; }
+		public ICellCoordinate? CellCoordinate { get; set; }
 		public string Message { get; set; }
 	}
 }
