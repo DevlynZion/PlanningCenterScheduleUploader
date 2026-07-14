@@ -85,7 +85,12 @@ namespace PlanningCenterScheduleUploader
                     WriteLine("Error");
                     WriteLine("=====");
                     foreach (var error in planningCenterManager.Errors)
-                        WriteLine($"{error.ErrorLevel} - [{error.CellCoordinate.TabName}, {error.CellCoordinate.RowNumber + 1}, {error.CellCoordinate.ColumnIndex + 1}] {error.Message}");
+                    {
+                        var location = error.CellCoordinate != null
+                            ? $"[{error.CellCoordinate.TabName}, {error.CellCoordinate.RowNumber + 1}, {error.CellCoordinate.ColumnIndex + 1}] "
+                            : string.Empty;
+                        WriteLine($"{error.ErrorLevel} - {location}{error.Message}");
+                    }
                 }
 
                 btnUpload.Enabled = true;

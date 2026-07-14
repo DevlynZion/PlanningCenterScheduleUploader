@@ -34,12 +34,16 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 				var Setup = result.Tables[SetupTabName];
 				var Schedule = result.Tables[ScheduleTabName];
 
+				var loadErrors = new List<ScheduleErrors>();
 				var rawConfigRows = LoadConfig(Setup);
-				var rawScheduleRows = LoadAssignmentsModel(Schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow);
+				var rawScheduleRows = LoadAssignmentsModel(Schedule, loadErrors, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow);
 
 				var ScheduleContextFactory = new ScheduleContextFactory();
 
-				return ScheduleContextFactory.Create(rawConfigRows, rawScheduleRows, rawScheduleRoleRow, rawScheduleDateRow);
+				var scheduleContext = ScheduleContextFactory.Create(rawConfigRows, rawScheduleRows, rawScheduleRoleRow, rawScheduleDateRow);
+				scheduleContext.Errors.AddRange(loadErrors);
+
+				return scheduleContext;
 			}
 		}
 
@@ -48,32 +52,56 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			if(scheduleContext == null || !scheduleContext.Errors.Any())
 				return;
 
-			using (var workbook = new XLWorkbook(excelFilePath))
+			var fileName = Path.GetFileNameWithoutExtension(excelFilePath);
+			var fileExtension = Path.GetExtension(excelFilePath);
+			var newExcelFilePath = Directory.GetCurrentDirectory() + "\\" + fileName + ErrorCopy + fileExtension;
+
+			try
 			{
-				foreach (var error in scheduleContext.Errors)
+				using (var workbook = new XLWorkbook(excelFilePath))
 				{
-					if (error.CellCoordinate == null)
-						continue;
-
-					var worksheet = workbook.Worksheet(error.CellCoordinate.TabName);
-
-					var changeColourTo = error.ErrorLevel switch
+					foreach (var error in scheduleContext.Errors)
 					{
-						ErrorLevel.Error => XLColor.Crimson,
-						ErrorLevel.Warnning => XLColor.Yellow,
-						ErrorLevel.Information => XLColor.SkyBlue,
-						_ => XLColor.NoColor,
-					};
+						if (error.CellCoordinate == null)
+							continue;
 
-					worksheet.Cell(error.CellCoordinate.RowNumber + 1, error.CellCoordinate.ColumnIndex + 1).Style.Fill.BackgroundColor = changeColourTo;
+						var worksheet = workbook.Worksheet(error.CellCoordinate.TabName);
+
+						var changeColourTo = error.ErrorLevel switch
+						{
+							ErrorLevel.Error => XLColor.Crimson,
+							ErrorLevel.Warnning => XLColor.Yellow,
+							ErrorLevel.Information => XLColor.SkyBlue,
+							_ => XLColor.NoColor,
+						};
+
+						worksheet.Cell(error.CellCoordinate.RowNumber + 1, error.CellCoordinate.ColumnIndex + 1).Style.Fill.BackgroundColor = changeColourTo;
+					}
+
+					ClearUnsaveableDates(workbook);
+
+					workbook.SaveAs(newExcelFilePath);
+				}
+			}
+			catch (Exception ex)
+			{
+				// SaveAs can abort mid-stream and leave a truncated workbook behind; delete it so
+				// the user never opens a corrupted copy. The error list still tells them where to look.
+				try
+				{
+					if (File.Exists(newExcelFilePath))
+						File.Delete(newExcelFilePath);
+				}
+				catch
+				{
 				}
 
-                var fileName = Path.GetFileNameWithoutExtension(excelFilePath);
-				var fileExtension = Path.GetExtension(excelFilePath);
-				var newExcelFilePath = Directory.GetCurrentDirectory() + "\\" + fileName.Replace(fileName, fileName + ErrorCopy) + fileExtension;
-
-                workbook.SaveAs(newExcelFilePath);
-            }
+				scheduleContext.Errors.Add(new ScheduleErrors()
+				{
+					ErrorLevel = ErrorLevel.Warnning,
+					Message = $"Could not save a highlighted copy of the Excel file: {ex.Message}"
+				});
+			}
 		}
 
 		private List<RawConfigRow> LoadConfig(DataTable setup)
@@ -82,8 +110,8 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 
 			foreach (DataRow setupRow in setup.Rows)
 			{
-				var configKey = setupRow.Field<string>(ConfigKeyColumnIndex);
-				var configValue = setupRow.Field<string>(ConfigValueColumnIndex);
+				var configKey = ReadCellAsString(setupRow, ConfigKeyColumnIndex);
+				var configValue = ReadCellAsString(setupRow, ConfigValueColumnIndex);
 				var rowNumber = setup.Rows.IndexOf(setupRow);
 
 				if (string.IsNullOrWhiteSpace(configKey))
@@ -113,14 +141,14 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			return rawConfigRows;
 		}
 
-		private List<RawScheduleRow> LoadAssignmentsModel(DataTable schedule, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow)
+		private List<RawScheduleRow> LoadAssignmentsModel(DataTable schedule, List<ScheduleErrors> loadErrors, out Dictionary<int, CellValue<string>> rawScheduleRoleRow, out List<CellValue<DateOnly>> rawScheduleDateRow)
 		{
             // TODO: This Phasing is making a lot of assumptions, we will look to refactor later.
 
             List<RawScheduleRow> rawScheduleRows = new List<RawScheduleRow>();
 
 			var isFirstRow = true;
-			var dateColumnName = string.Empty;
+			var dateColumnIndex = -1;
 			rawScheduleRoleRow = new Dictionary<int, CellValue<string>>();
 			rawScheduleDateRow = new List<CellValue<DateOnly>>();
 			foreach (DataRow assignRow in schedule.Rows)
@@ -131,14 +159,15 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 					isFirstRow = false;
 					foreach (DataColumn role in schedule.Columns)
 					{
-						var roleName = assignRow.Field<string>(role);
+						var columnIndex = schedule.Columns.IndexOf(role);
+						var roleName = ReadCellAsString(assignRow, columnIndex);
 
 						if (string.IsNullOrWhiteSpace(roleName))
 							continue;
 
 						if (roleName.ToLowerInvariant() == DateColumnName)
 						{
-							dateColumnName = role.ColumnName;
+							dateColumnIndex = columnIndex;
 							continue;
 						}
 
@@ -146,7 +175,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 						{
 							TabName = ScheduleTabName,
 							RowNumber = rowNumber,
-							ColumnIndex = schedule.Columns.IndexOf(role),
+							ColumnIndex = columnIndex,
 							Value = roleName
 						};
 
@@ -156,51 +185,116 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 				else
 				{
 					var date = DateOnly.MinValue;
-					foreach (DataColumn role in schedule.Columns)
+					if (dateColumnIndex >= 0)
 					{
-						var columnIndex = schedule.Columns.IndexOf(role);
-						if (role.ColumnName == dateColumnName)
+						// Read the date first: without a usable date the row's assignments cannot be scheduled.
+						var rawDate = assignRow[dateColumnIndex];
+						if (rawDate is DateTime dateTime)
 						{
-							date = DateOnly.FromDateTime(assignRow.Field<DateTime>(role));
+							date = DateOnly.FromDateTime(dateTime);
 							rawScheduleDateRow.Add(new CellValue<DateOnly>()
 							{
 								TabName = ScheduleTabName,
 								RowNumber = rowNumber,
-								ColumnIndex = columnIndex,
+								ColumnIndex = dateColumnIndex,
 								Value = date
 							});
 						}
+						else if (IsRowEmpty(assignRow))
+						{
+							continue; // Skipping because the whole row is blank.
+						}
 						else
 						{
-							var person = assignRow.Field<string>(role);
+							var message = rawDate == DBNull.Value
+								? "The date is missing for this row in the Schedule tab"
+								: $"The value {rawDate} in the date column of the Schedule tab is not a valid date";
 
-							if (!rawScheduleRoleRow.ContainsKey(columnIndex))
-								continue; // Skipping because there is blank Role Header.
-
-							var roleName = rawScheduleRoleRow[columnIndex];
-
-							if (string.IsNullOrWhiteSpace(person))
-								continue;
-
-							var rawScheduleRow = new RawScheduleRow()
+							loadErrors.Add(new ScheduleErrors()
 							{
-								Date = date,
-								Role = roleName.Value,
-								PersonName = new CellValue<string>()
+								ErrorLevel = ErrorLevel.Error,
+								CellCoordinate = new CellValue<string>()
 								{
 									TabName = ScheduleTabName,
 									RowNumber = rowNumber,
-									ColumnIndex = columnIndex,
-									Value = person
-								}
-							};
-							rawScheduleRows.Add(rawScheduleRow);
+									ColumnIndex = dateColumnIndex
+								},
+								Message = message
+							});
+
+							continue; // Skipping because the row's assignments have no usable date.
 						}
+					}
+
+					foreach (DataColumn role in schedule.Columns)
+					{
+						var columnIndex = schedule.Columns.IndexOf(role);
+						if (columnIndex == dateColumnIndex)
+							continue;
+
+						var person = ReadCellAsString(assignRow, columnIndex);
+
+						if (!rawScheduleRoleRow.ContainsKey(columnIndex))
+							continue; // Skipping because there is blank Role Header.
+
+						var roleName = rawScheduleRoleRow[columnIndex];
+
+						if (string.IsNullOrWhiteSpace(person))
+							continue;
+
+						var rawScheduleRow = new RawScheduleRow()
+						{
+							Date = date,
+							Role = roleName.Value,
+							PersonName = new CellValue<string>()
+							{
+								TabName = ScheduleTabName,
+								RowNumber = rowNumber,
+								ColumnIndex = columnIndex,
+								Value = person
+							}
+						};
+						rawScheduleRows.Add(rawScheduleRow);
 					}
 				}
 			}
 
 			return rawScheduleRows;
+		}
+
+		private static void ClearUnsaveableDates(XLWorkbook workbook)
+		{
+			// A date outside the range Excel can represent (e.g. year 20206 from a typo) loads
+			// fine but makes ClosedXML's SaveAs throw and truncate the workbook mid-write.
+			foreach (var worksheet in workbook.Worksheets)
+			{
+				foreach (var cell in worksheet.CellsUsed(c => c.DataType == XLDataType.DateTime))
+				{
+					try
+					{
+						cell.GetDateTime();
+					}
+					catch (ArgumentException)
+					{
+						cell.Clear(XLClearOptions.Contents);
+					}
+				}
+			}
+		}
+
+		private static string? ReadCellAsString(DataRow row, int columnIndex)
+		{
+			var value = row[columnIndex];
+
+			if (value == null || value == DBNull.Value)
+				return null;
+
+			return value.ToString();
+		}
+
+		private static bool IsRowEmpty(DataRow row)
+		{
+			return row.ItemArray.All(value => value == DBNull.Value || string.IsNullOrWhiteSpace(value?.ToString()));
 		}
 	}
 }
