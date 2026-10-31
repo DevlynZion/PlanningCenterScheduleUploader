@@ -37,7 +37,7 @@ Credentials are stored locally on your computer and are never shared.
 
 ## Excel File Format
 
-The app reads scheduling data from an Excel file with two tabs: **Setup** and **Schedule**.
+The app reads scheduling data from an Excel file with two tabs: **Setup** and **Schedule**. To get started, download the [sample schedule](Document/Sample%20Schedule.xlsx) and replace its contents with your own.
 
 ### Setup tab
 
@@ -50,12 +50,13 @@ The app reads scheduling data from an Excel file with two tabs: **Setup** and **
 
 - **Row 1 — Headers:** The first column must be named `date`. Each additional column is a role name that must match a Planning Center team position exactly.
 - **Rows 2+ — Data:** The `date` column must contain a valid Excel date. Each role column contains the full name of the person to assign — the name must match their name in Planning Center exactly (case-sensitive).
+- **More than one person in a role:** Put a semicolon between the names in the same cell, e.g. `Jane Smith; Tom Lee`. Only semicolons separate names, so a name containing a comma is kept whole.
 
 **Example:**
 
 | date | Sound | Presenter | Worship Leader |
 |---|---|---|---|
-| 2024-06-02 | Jane Smith | Bob Jones | Alice Brown |
+| 2024-06-02 | Jane Smith; Tom Lee | Bob Jones | Alice Brown |
 | 2024-06-09 | Jane Smith | | Alice Brown |
 
 ### After upload
@@ -64,6 +65,8 @@ If any errors occur, the app saves a copy of your file named `<original file> (E
 - **Red** — errors that prevented upload
 - **Yellow** — warnings
 - **Blue** — informational notices
+
+A cell with several people is highlighted as a whole, using the colour of its most serious problem. Check the log in the app to see which person it refers to.
 
 ---
 
@@ -75,7 +78,7 @@ After an upload, click the **Copy Logs** button at the bottom of the app to copy
 
 ## Updating the App
 
-The app checks for updates automatically when it starts. If a newer version is available, a link will appear at the bottom of the window. Click it to open the Releases page and download the new version — replace your existing `PlanningCenterScheduleUploader.exe` with the downloaded file.
+The app checks for updates automatically when it starts. If a newer version is available, an orange **Update Available** button will appear at the bottom of the window. Click it to open the Releases page and download the new version — replace your existing `PlanningCenterScheduleUploader.exe` with the downloaded file.
 
 ---
 
