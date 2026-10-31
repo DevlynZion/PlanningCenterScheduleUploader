@@ -17,7 +17,7 @@ PlanningCenterScheduleUploader/          ← repo root
 │   ├── PlanningCenterAPI.Test/          ← Manual test harness (not automated)
 │   └── ProcessSourceFile/               ← Incomplete utility, unused
 └── Document/
-    ├── ExampleData/Nkele/               ← Sample Excel schedules
+    ├── Sample Schedule.xlsx             ← Sample Excel schedule for users
     └── Planning Centre JSON API Structure.xlsx
 ```
 
@@ -37,7 +37,8 @@ PlanningCenterScheduleUploader/          ← repo root
 
 ### Excel File Format
 - **Setup tab**: Two columns — key in A, value in B. Required keys: `Service Type`, `Team`
-- **Schedule tab**: Row 1 = headers (`date` column required; other columns = role names matching Planning Center team position names exactly). Rows 2+ = data (date must be an Excel date value; cells contain person full names matching Planning Center exactly)
+- **Schedule tab**: Row 1 = headers (`date` column required; other columns = role names matching Planning Center team position names exactly). Rows 2+ = data (date must be an Excel date value; cells contain person full names matching Planning Center exactly; separate several people in one role with semicolons, e.g. `Alex Example; Taylor Sample`)
+- Sample file to share with users: `Document/Sample Schedule.xlsx`
 - On error: a `<filename> (Errors).xlsx` file is saved with color-coded cells
 
 ## Planning Center API

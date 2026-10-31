@@ -12,6 +12,7 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 		private const string SetupTabName = "Setup";
 		private const string ScheduleTabName = "Schedule";
 		private const string DateColumnName = "date";
+		private const char PersonSeparator = ';';
 		private const int ConfigKeyColumnIndex = 0;
         private const int ConfigValueColumnIndex = 1;
         private const string ErrorCopy = " (Errors)";
@@ -60,7 +61,9 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 			{
 				using (var workbook = new XLWorkbook(excelFilePath))
 				{
-					foreach (var error in scheduleContext.Errors)
+					// A cell can hold several people, so it can have several errors. Colouring the
+					// least severe first means the most severe one is the colour that remains.
+					foreach (var error in scheduleContext.Errors.OrderBy(e => e.ErrorLevel))
 					{
 						if (error.CellCoordinate == null)
 							continue;
@@ -242,19 +245,37 @@ namespace PlanningCenterScheduleUploaderLib.Process.Implementation
 						if (string.IsNullOrWhiteSpace(person))
 							continue;
 
-						var rawScheduleRow = new RawScheduleRow()
+						var addedPersons = new HashSet<string>();
+						foreach (var personName in person.Split(PersonSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
 						{
-							Date = date,
-							Role = roleName.Value,
-							PersonName = new CellValue<string>()
+							var personCell = new CellValue<string>()
 							{
 								TabName = ScheduleTabName,
 								RowNumber = rowNumber,
 								ColumnIndex = columnIndex,
-								Value = person
+								Value = personName
+							};
+
+							if (!addedPersons.Add(personName))
+							{
+								loadErrors.Add(new ScheduleErrors()
+								{
+									ErrorLevel = ErrorLevel.Warnning,
+									CellCoordinate = personCell,
+									Message = $"The Person called {personName} is listed more than once for {roleName.Value} in one cell of the Schedule tab. They will only be scheduled once."
+								});
+
+								continue; // Skipping because this person is already assigned from this cell.
 							}
-						};
-						rawScheduleRows.Add(rawScheduleRow);
+
+							var rawScheduleRow = new RawScheduleRow()
+							{
+								Date = date,
+								Role = roleName.Value,
+								PersonName = personCell
+							};
+							rawScheduleRows.Add(rawScheduleRow);
+						}
 					}
 				}
 			}
